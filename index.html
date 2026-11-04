@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>三井牙醫・三井美學牙醫｜資金與財產結算</title>
+<style>
+:root{--bg:#f6f7f5;--card:#fff;--text:#1d2b27;--mute:#5d6b66;--line:#cfd6d2;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121816;--card:#1b2420;--text:#e8efec;--mute:#9aa8a2;--line:#33403b}}
+:root[data-theme="dark"]{--bg:#121816;--card:#1b2420;--text:#e8efec;--mute:#9aa8a2;--line:#33403b}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.55}
+main{max-width:760px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:1.35rem;margin:0 0 4px}
+.sub{color:var(--mute);font-size:.88rem;margin:0 0 14px}
+.tabs{display:flex;gap:8px;margin-bottom:14px}
+.tabs button{flex:1;padding:10px 6px;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:10px;font:inherit;cursor:pointer;line-height:1.3}
+.tabs button small{display:block;color:var(--mute);font-size:.75rem}
+.tabs button.on{border-color:var(--text);font-weight:700}
+.sh,.sw,.sumbox{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:12px}
+.sh h2,.sw h2,.sumbox h2{font-size:1rem;margin:0 0 8px}
+.row{display:flex;align-items:center;gap:10px;padding:3px 0;font-size:.9rem}
+.row span:first-child{width:9.5em;flex:none}
+.bar{flex:1;height:8px;border-radius:4px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:#0f9d8a}
+.row b{width:3.6em;text-align:right}
+.tot{border-top:1px solid var(--line);margin-top:4px;padding-top:6px}
+.ex .bar i{background:#d6455d;opacity:.6}
+.ex .nm{text-decoration:line-through;color:var(--mute)}
+.row em{font-style:normal;font-size:.7rem;padding:0 6px;border-radius:99px;background:#d6455d;color:#fff;margin-left:4px}
+.sw{border-left:5px solid #d6455d;font-size:.9rem}
+.sw p{margin:2px 0}
+.u{margin-top:8px;color:var(--mute);font-size:.84rem}
+.u b{color:var(--text)}
+.sumbox{border-left:5px solid #4c9a3f}
+.sr{display:flex;justify-content:space-between;padding:2px 0;font-size:.92rem}
+.sr.k{font-weight:700;border-top:1px solid var(--line);margin-top:4px;padding-top:6px}
+.chk{margin-top:8px;padding:6px 10px;border-radius:8px;font-size:.88rem;font-weight:700}
+.chk.ok{background:color-mix(in srgb,#4c9a3f 20%,var(--card))}
+.chk.bad{background:color-mix(in srgb,#d6455d 18%,var(--card))}
+.chk.nil{background:var(--bg);color:var(--mute);font-weight:400}
+.card{background:color-mix(in srgb,var(--c) 13%,var(--card));border:1px solid var(--line);border-left:5px solid var(--c);border-radius:10px;padding:12px 14px}
+.card h2{font-size:1.02rem;margin:0 0 6px}
+.itm{padding:6px 0}
+.itm+.itm{border-top:1px dashed var(--line)}
+.ih{display:flex;justify-content:space-between;align-items:center;font-size:.92rem}
+.bt button{width:32px;height:32px;margin-left:6px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--text);font-size:1.1rem;line-height:1;cursor:pointer}
+.bt button:disabled{opacity:.3;cursor:default}
+.en{display:flex;align-items:center;gap:6px;margin-top:5px}
+.ix{width:1.3em;flex:none;color:var(--mute);font-size:.8rem;text-align:center}
+.itm input{flex:1;min-width:0;width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--text);font:inherit;font-size:16px}
+.itm input.a{text-align:right}
+.itm input.n{font-size:14px}
+.st{display:flex;justify-content:space-between;border-top:1px solid var(--line);margin-top:6px;padding-top:6px;font-weight:700;font-size:.95rem}
+.ar{text-align:center;color:var(--mute);font-size:.8rem;line-height:1.2;padding:6px 0}
+.note{color:var(--mute);font-size:.78rem;margin-top:16px}
+</style>
+</head>
+<body>
+<main>
+<h1>資金與財產結算</h1>
+<p class="sub">金額單位：元。兩間診所分開輸入；每個項目可按 ＋ 增加一筆、− 減少一筆，每筆都有備注欄；盈虧與調整可輸入負數（例如 -5000）</p>
+<div class="tabs" id="tabs">
+<button class="on" data-i="0">三井牙醫<small>負責人 郭維仁</small></button>
+<button data-i="1">三井美學牙醫<small>負責人 陳宜廷</small></button>
+</div>
+<p class="sub" id="stat">連線中…</p>
+<div id="sh"></div>
+<div class="sumbox" id="sum"></div>
+<div id="list"></div>
+<p class="note">數字存在共用儲存，有編輯權限的人都能修改；兩人同時改同一筆時，以最後存入的為準。僅為概念示意，不構成法律、稅務或財務建議。</p>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+var SUPABASE_URL = 'https://uafwnkgkocvuaztuxowo.supabase.co';
+var SUPABASE_ANON_KEY = 'sb_publishable_q6qRmnvKG5HGorjT1e4btA_MkFlEqYo';
+var N=['三井牙醫','三井美學牙醫'];
+var S=[['郭維仁醫師',40,70],['陳宜廷醫師',20,10],['陳翊文醫師',15,7.5],['余珮璇醫師',10,5],['林佑都醫師',5,2.5],['林亭伃',10,5]];
+var E=[[0,5],[1,2,3,4]];
+var G=[
+{n:'①',t:'現金與銀行',c:'#0f9d8a',u:'確認實際有多少錢',items:['銀行帳戶','現金','定存']},
+{n:'②',t:'其他資產',c:'#d9822b',u:'加入診所資產總額',items:['未收健保','自費分期','刷卡未入帳','押金','存貨','設備及裝潢剩餘價值']},
+{n:'③',t:'對外負債',c:'#d6455d',u:'從資產扣除',items:['未付薪資','技工材料費','應付稅款','貸款','股東借款','患者預收款','其他']},
+{n:'④',t:'專戶與保留款',c:'#3b82c4',u:'註明用途，不當作可隨意動用的錢',items:['稅金準備','擴展基金','儲備金','福利','體系管理','院長紅利','獎金池']},
+{n:'⑤',t:'股東分配與返還',c:'#8b5cc7',u:'分清已發與未發',items:['分紅','開業攤提返還','退股款']},
+{n:'⑥',t:'股東淨值',c:'#4c9a3f',u:'算出診所剩餘價值',items:['出資','歷年盈虧','當期盈虧','分配調整'],neg:[1,2,3]}
+];
+var A=['','↓ 加上其他資產','↓ 扣除負債','↓ 其中已指定用途的款項','↓ 股東可分配與已返還','↓ 結算得出'];
+var D=[{},{}],cur=0,KEY='sanjing-clinics-v2';
+try{var raw=localStorage.getItem(KEY)||localStorage.getItem('sanjing-clinics-v1');if(raw){var p=JSON.parse(raw);if(p&&p.length===2)D=p;}}catch(e){}
+function ents(i,key){var v=D[i][key];if(!Array.isArray(v))v=[{a:v||'',n:''}];if(!v.length)v.push({a:'',n:''});D[i][key]=v;return v;}
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(D));}catch(e){}}
+function num(v){var x=parseFloat(String(v==null?'':v).replace(/[,\s，]/g,''));return isNaN(x)?0:x;}
+function fm(x){return x.toLocaleString('zh-TW',{maximumFractionDigits:2});}
+function sub(i,k){var t=0;G[k].items.forEach(function(_,j){ents(i,'g'+k+'_'+j).forEach(function(en){t+=num(en.a);});});return t;}
+function renderSh(i){
+var s='<div class="sh"><h2>股東持股</h2>';
+S.forEach(function(r,k){var x=E[i].indexOf(k)>=0;s+='<div class="row'+(x?' ex':'')+'"><span><span class="nm">'+r[0]+'</span>'+(x?'<em>退出</em>':'')+'</span><span class="bar"><i style="width:'+r[i+1]+'%"></i></span><b>'+r[i+1]+'%</b></div>';});
+s+='<div class="row tot"><span>合計</span><span></span><b>100%</b></div></div>';
+var w='<div class="sw"><h2>轉換安排（先結算，再抵扣）</h2>';
+[0,1].forEach(function(c){var t=0,n=[];E[c].forEach(function(k){t+=S[k][c+1];n.push(S[k][0]);});w+='<p><b>'+N[c]+'</b> 退出：'+n.join('、')+'（合計 '+(Math.round(t*10)/10)+'%）</p>';});
+w+='<p class="u"><b>步驟 1</b>：先把兩間診所各自結算完，也就是下方六大塊，算出各自的 ⑥ 股東淨值。<br><b>步驟 2</b>：兩邊都結算完後，再到新頁面做退出股東金額的互相抵扣。<br>持股比例不等於金額，實際金額以步驟 1 的結算結果為準。</p></div>';
+document.getElementById('sh').innerHTML=s+w;
+}
+function renderCards(i){
+var h='';
+G.forEach(function(g,k){
+if(k)h+='<div class="ar">'+A[k]+'</div>';
+h+='<div class="card" style="--c:'+g.c+'"><h2>'+g.n+' '+g.t+'</h2>';
+g.items.forEach(function(nm,j){
+var key='g'+k+'_'+j,es=ents(i,key),neg=g.neg&&g.neg.indexOf(j)>=0;
+h+='<div class="itm"><div class="ih"><span>'+nm+'</span><span class="bt"><button data-act="del" data-k="'+key+'"'+(es.length<2||!CAN?' disabled':'')+' aria-label="減少一筆">−</button><button data-act="add" data-k="'+key+'"'+(CAN?'':' disabled')+' aria-label="增加一筆">＋</button></span></div>';
+es.forEach(function(en,x){
+h+='<div class="en"><span class="ix">'+(es.length>1?x+1:'')+'</span><input class="a" data-k="'+key+'" data-e="'+x+'" data-f="a" inputmode="'+(neg?'text':'decimal')+'" placeholder="0" value="'+esc(en.a)+'"'+ro()+'></div>';
+h+='<div class="en"><span class="ix"></span><input class="n" data-k="'+key+'" data-e="'+x+'" data-f="n" placeholder="備注" value="'+esc(en.n)+'"'+ro()+'></div>';
+});
+h+='</div>';
+});
+h+='<div class="st"><span>小計</span><span id="s'+k+'">0</span></div><p class="u"><b>結算用途：</b>'+g.u+'</p></div>';
+});
+document.getElementById('list').innerHTML=h;
+}
+function calc(i){
+var s=[];
+for(var k=0;k<6;k++){s[k]=sub(i,k);document.getElementById('s'+k).textContent=fm(s[k]);}
+var asset=s[0]+s[1],net=asset-s[2],diff=net-s[5];
+function r(a,b,c){return '<div class="sr'+(c?' k':'')+'"><span>'+a+'</span><span>'+fm(b)+'</span></div>';}
+var empty=!asset&&!s[2]&&!s[5];
+var ok=Math.abs(diff)<0.005;
+document.getElementById('sum').innerHTML='<h2>'+N[i]+' 結算摘要</h2>'
++r('資產（① ＋ ②）',asset)+r('對外負債（③）',s[2])+r('診所淨資產（① ＋ ② − ③）',net,1)+r('⑥ 股東淨值',s[5],1)
++'<div class="chk '+(empty?'nil':ok?'ok':'bad')+'">'+(empty?'尚未輸入數字':ok?'已對平':'尚未對平，差額 '+fm(diff)+'（淨資產 − 股東淨值）')+'</div>';
+}
+function show(i){cur=i;renderSh(i);renderCards(i);calc(i);}
+document.getElementById('list').addEventListener('input',function(e){
+var d=e.target.dataset;if(!d||!d.k||!d.f)return;
+ents(cur,d.k)[+d.e][d.f]=e.target.value;save();dbPush(cur,d.k);calc(cur);
+});
+document.getElementById('list').addEventListener('click',function(e){
+var b=e.target.closest('button');if(!b||b.disabled)return;
+var es=ents(cur,b.dataset.k);
+if(b.dataset.act==='add')es.push({a:'',n:''});else if(es.length>1)es.pop();
+save();dbPush(cur,b.dataset.k);renderCards(cur);calc(cur);
+});
+document.getElementById('tabs').addEventListener('click',function(e){
+var b=e.target.closest('button');if(!b)return;
+document.querySelectorAll('#tabs button').forEach(function(x){x.classList.remove('on')});
+b.classList.add('on');show(+b.dataset.i);
+});
+var CAN=true,sbClient=null,T={},W={};
+function ro(){return CAN?'':' readonly';}
+function stat(t){document.getElementById('stat').textContent=t;}
+function clone(x){return JSON.parse(JSON.stringify(x));}
+function same(a,b){return JSON.stringify(a)===JSON.stringify(b);}
+function dbPush(i,key){if(!sbClient)return;var id=i+'_'+key;clearTimeout(T[id]);T[id]=setTimeout(function(){T[id]=0;flush(i,key);},400);}
+function flush(i,key){
+var id=i+'_'+key;if(W[id]){W[id]=2;return;}W[id]=1;
+var row={clinic_id:i,item_key:key,entries:clone(ents(i,key)),updated_at:new Date().toISOString()};
+sbClient.from('clinic_items').upsert(row,{onConflict:'clinic_id,item_key'}).then(function(res){
+if(res.error){stat('儲存失敗：'+res.error.message);}
+var again=W[id]===2;W[id]=0;if(again)flush(i,key);
+});
+}
+function startRealtime(i){
+sbClient.channel('clinic_'+i)
+.on('postgres_changes',{event:'*',schema:'public',table:'clinic_items',filter:'clinic_id=eq.'+i},function(payload){
+var row=payload.new||payload.old;if(!row)return;
+var key=row.item_key,val=row.entries;
+if(!Array.isArray(val)||same(D[i][key],val))return;
+D[i][key]=clone(val);save();
+if(i===cur){renderCards(i);calc(i);}
+})
+.subscribe();
+}
+async function initSupabase(){
+try{
+sbClient=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+stat('共用儲存連線中…');
+for(var i=0;i<2;i++){
+var res=await sbClient.from('clinic_items').select('*').eq('clinic_id',i);
+if(res.error){throw res.error;}
+if(res.data&&res.data.length>0){
+D[i]={};
+res.data.forEach(function(row){if(Array.isArray(row.entries))D[i][row.item_key]=clone(row.entries);});
+save();
+}else{
+Object.keys(D[i]).forEach(function(k){if(D[i][k])dbPush(i,k);});
+}
+startRealtime(i);
+}
+renderCards(cur);calc(cur);
+stat(CAN?'已連到共用儲存：大家看到同一份，修改會即時同步':'共用儲存：你目前只能查看，不能修改');
+}catch(err){
+stat('共用儲存無法連線（'+err.message+'），資料暫存於此瀏覽器');
+}
+}
+show(0);
+initSupabase();
+</script>
+</body>
+</html>
