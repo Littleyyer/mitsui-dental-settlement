@@ -14,7 +14,7 @@ body[data-clinic="1"]{--bg:#f3eefa;--acc:#8a6bc4;--tint:#e8e0f5;--line:#d3c8e6}
 :root[data-theme="dark"] body[data-clinic="0"]{--bg:#13201a;--acc:#7bc795;--tint:#1c3326;--line:#2f4a3a}
 :root[data-theme="dark"] body[data-clinic="1"]{--bg:#1a1626;--acc:#b39ae0;--tint:#2a2140;--line:#43375e}
 *{box-sizing:border-box}
-body{margin:0;overflow-x:hidden;transition:background .25s;background:var(--bg);color:var(--text);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.55}
+body{margin:0;transition:background .25s;background:var(--bg);color:var(--text);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.55}
 main{max-width:760px;margin:0 auto;padding:20px 16px 40px}
 h1{font-size:1.35rem;margin:0 0 4px;color:var(--acc)}
 .sub{color:var(--mute);font-size:.88rem;margin:0 0 14px}
@@ -61,12 +61,6 @@ h1{font-size:1.35rem;margin:0 0 4px;color:var(--acc)}
 .st{display:flex;justify-content:space-between;border-top:1px solid var(--line);margin-top:6px;padding-top:6px;font-weight:700;font-size:.95rem}
 .ar{text-align:center;color:var(--mute);font-size:.8rem;line-height:1.2;padding:6px 0}
 .note{color:var(--mute);font-size:.78rem;margin-top:16px}
-.hint{text-align:center;color:var(--mute);font-size:.78rem;margin:-6px 0 10px}
-@keyframes inR{from{opacity:0;transform:translateX(44px)}to{opacity:1;transform:none}}
-@keyframes inL{from{opacity:0;transform:translateX(-44px)}to{opacity:1;transform:none}}
-#pane.inR{animation:inR .3s cubic-bezier(.2,.8,.2,1)}
-#pane.inL{animation:inL .3s cubic-bezier(.2,.8,.2,1)}
-@media (prefers-reduced-motion:reduce){#pane.inR,#pane.inL{animation:none}}
 </style>
 </head>
 <body>
@@ -77,13 +71,10 @@ h1{font-size:1.35rem;margin:0 0 4px;color:var(--acc)}
 <button class="on" data-i="0">三井牙醫<small>負責人 郭維仁</small></button>
 <button data-i="1">三井美學牙醫<small>負責人 陳宜廷</small></button>
 </div>
-<p class="hint">← 左右滑動可切換診所 →</p>
 <p class="sub" id="stat">連線中…</p>
-<div id="pane">
 <div id="sh"></div>
 <div class="sumbox" id="sum"></div>
 <div id="list"></div>
-</div>
 <p class="note">數字存在共用儲存，有編輯權限的人都能修改；兩人同時改同一筆時，以最後存入的為準。僅為概念示意，不構成法律、稅務或財務建議。</p>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -148,12 +139,7 @@ document.getElementById('sum').innerHTML='<h2>'+N[i]+' 結算摘要</h2>'
 +r('資產（① ＋ ②）',asset)+r('對外負債（③）',s[2])+r('診所淨資產（① ＋ ② − ③）',net,1)+r('⑥ 股東淨值',s[5],1)
 +'<div class="chk '+(empty?'nil':ok?'ok':'bad')+'">'+(empty?'尚未輸入數字':ok?'已對平':'尚未對平，差額 '+fm(diff)+'（淨資產 − 股東淨值）')+'</div>';
 }
-function show(i){
-var prev=cur;cur=i;document.body.dataset.clinic=i;
-document.querySelectorAll('#tabs button').forEach(function(x){x.classList.toggle('on',+x.dataset.i===i);});
-renderSh(i);renderCards(i);calc(i);
-if(i!==prev){var p=document.getElementById('pane');p.classList.remove('inR','inL');void p.offsetWidth;p.classList.add(i>prev?'inR':'inL');}
-}
+function show(i){cur=i;document.body.dataset.clinic=i;renderSh(i);renderCards(i);calc(i);}
 document.getElementById('list').addEventListener('input',function(e){
 var d=e.target.dataset;if(!d||!d.k||!d.f)return;
 ents(cur,d.k)[+d.e][d.f]=e.target.value;save();dbPush(cur,d.k);calc(cur);
@@ -166,23 +152,8 @@ save();dbPush(cur,b.dataset.k);renderCards(cur);calc(cur);
 });
 document.getElementById('tabs').addEventListener('click',function(e){
 var b=e.target.closest('button');if(!b)return;
-show(+b.dataset.i);
-});
-var tx=0,ty=0,tOK=false;
-document.addEventListener('touchstart',function(e){
-var t=e.touches[0],el=e.target;
-tOK=e.touches.length===1&&!(el.closest&&el.closest('input,textarea,button'));
-tx=t.clientX;ty=t.clientY;
-},{passive:true});
-document.addEventListener('touchend',function(e){
-if(!tOK)return;tOK=false;
-var t=e.changedTouches[0],dx=t.clientX-tx,dy=t.clientY-ty;
-if(Math.abs(dx)<60||Math.abs(dx)<Math.abs(dy)*1.5)return;
-var to=dx<0?1:0;if(to!==cur)show(to);
-},{passive:true});
-document.addEventListener('keydown',function(e){
-var el=document.activeElement;if(el&&/^(INPUT|TEXTAREA)$/.test(el.tagName))return;
-if(e.key==='ArrowRight'&&cur!==1)show(1);else if(e.key==='ArrowLeft'&&cur!==0)show(0);
+document.querySelectorAll('#tabs button').forEach(function(x){x.classList.remove('on')});
+b.classList.add('on');show(+b.dataset.i);
 });
 var CAN=true,sbClient=null,T={},W={};
 function ro(){return CAN?'':' readonly';}
