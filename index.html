@@ -8,21 +8,28 @@
 :root{--bg:#f6f7f5;--card:#fff;--text:#1d2b27;--mute:#5d6b66;--line:#cfd6d2;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121816;--card:#1b2420;--text:#e8efec;--mute:#9aa8a2;--line:#33403b}}
 :root[data-theme="dark"]{--bg:#121816;--card:#1b2420;--text:#e8efec;--mute:#9aa8a2;--line:#33403b}
+body[data-clinic="0"]{--bg:#eef7ef;--acc:#4f9d69;--tint:#e0f0e4;--line:#c5dccb}
+body[data-clinic="1"]{--bg:#f3eefa;--acc:#8a6bc4;--tint:#e8e0f5;--line:#d3c8e6}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) body[data-clinic="0"]{--bg:#13201a;--acc:#7bc795;--tint:#1c3326;--line:#2f4a3a}:root:not([data-theme="light"]) body[data-clinic="1"]{--bg:#1a1626;--acc:#b39ae0;--tint:#2a2140;--line:#43375e}}
+:root[data-theme="dark"] body[data-clinic="0"]{--bg:#13201a;--acc:#7bc795;--tint:#1c3326;--line:#2f4a3a}
+:root[data-theme="dark"] body[data-clinic="1"]{--bg:#1a1626;--acc:#b39ae0;--tint:#2a2140;--line:#43375e}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.55}
+body{margin:0;transition:background .25s;background:var(--bg);color:var(--text);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.55}
 main{max-width:760px;margin:0 auto;padding:20px 16px 40px}
-h1{font-size:1.35rem;margin:0 0 4px}
+h1{font-size:1.35rem;margin:0 0 4px;color:var(--acc)}
 .sub{color:var(--mute);font-size:.88rem;margin:0 0 14px}
 .tabs{display:flex;gap:8px;margin-bottom:14px}
 .tabs button{flex:1;padding:10px 6px;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:10px;font:inherit;cursor:pointer;line-height:1.3}
 .tabs button small{display:block;color:var(--mute);font-size:.75rem}
-.tabs button.on{border-color:var(--text);font-weight:700}
+.tabs button.on{border-color:var(--acc);background:var(--tint);font-weight:700}
+.tabs button[data-i="0"]:not(.on){border-color:#c5dccb}
+.tabs button[data-i="1"]:not(.on){border-color:#d3c8e6}
 .sh,.sw,.sumbox{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:12px}
 .sh h2,.sw h2,.sumbox h2{font-size:1rem;margin:0 0 8px}
 .row{display:flex;align-items:center;gap:10px;padding:3px 0;font-size:.9rem}
 .row span:first-child{width:9.5em;flex:none}
 .bar{flex:1;height:8px;border-radius:4px;background:var(--line);overflow:hidden}
-.bar i{display:block;height:100%;background:#0f9d8a}
+.bar i{display:block;height:100%;background:var(--acc)}
 .row b{width:3.6em;text-align:right}
 .tot{border-top:1px solid var(--line);margin-top:4px;padding-top:6px}
 .ex .bar i{background:#d6455d;opacity:.6}
@@ -32,15 +39,15 @@ h1{font-size:1.35rem;margin:0 0 4px}
 .sw p{margin:2px 0}
 .u{margin-top:8px;color:var(--mute);font-size:.84rem}
 .u b{color:var(--text)}
-.sumbox{border-left:5px solid #4c9a3f}
+.sumbox{border-left:5px solid var(--acc);background:var(--tint)}
 .sr{display:flex;justify-content:space-between;padding:2px 0;font-size:.92rem}
 .sr.k{font-weight:700;border-top:1px solid var(--line);margin-top:4px;padding-top:6px}
 .chk{margin-top:8px;padding:6px 10px;border-radius:8px;font-size:.88rem;font-weight:700}
 .chk.ok{background:color-mix(in srgb,#4c9a3f 20%,var(--card))}
 .chk.bad{background:color-mix(in srgb,#d6455d 18%,var(--card))}
 .chk.nil{background:var(--bg);color:var(--mute);font-weight:400}
-.card{background:color-mix(in srgb,var(--c) 13%,var(--card));border:1px solid var(--line);border-left:5px solid var(--c);border-radius:10px;padding:12px 14px}
-.card h2{font-size:1.02rem;margin:0 0 6px}
+.card{background:color-mix(in srgb,var(--acc) 12%,var(--card));border:1px solid var(--line);border-left:5px solid var(--acc);border-radius:10px;padding:12px 14px}
+.card h2{font-size:1.02rem;margin:0 0 6px;color:var(--acc)}
 .itm{padding:6px 0}
 .itm+.itm{border-top:1px dashed var(--line)}
 .ih{display:flex;justify-content:space-between;align-items:center;font-size:.92rem}
@@ -107,7 +114,7 @@ function renderCards(i){
 var h='';
 G.forEach(function(g,k){
 if(k)h+='<div class="ar">'+A[k]+'</div>';
-h+='<div class="card" style="--c:'+g.c+'"><h2>'+g.n+' '+g.t+'</h2>';
+h+='<div class="card"><h2>'+g.n+' '+g.t+'</h2>';
 g.items.forEach(function(nm,j){
 var key='g'+k+'_'+j,es=ents(i,key),neg=g.neg&&g.neg.indexOf(j)>=0;
 h+='<div class="itm"><div class="ih"><span>'+nm+'</span><span class="bt"><button data-act="del" data-k="'+key+'"'+(es.length<2||!CAN?' disabled':'')+' aria-label="減少一筆">−</button><button data-act="add" data-k="'+key+'"'+(CAN?'':' disabled')+' aria-label="增加一筆">＋</button></span></div>';
@@ -132,7 +139,7 @@ document.getElementById('sum').innerHTML='<h2>'+N[i]+' 結算摘要</h2>'
 +r('資產（① ＋ ②）',asset)+r('對外負債（③）',s[2])+r('診所淨資產（① ＋ ② − ③）',net,1)+r('⑥ 股東淨值',s[5],1)
 +'<div class="chk '+(empty?'nil':ok?'ok':'bad')+'">'+(empty?'尚未輸入數字':ok?'已對平':'尚未對平，差額 '+fm(diff)+'（淨資產 − 股東淨值）')+'</div>';
 }
-function show(i){cur=i;renderSh(i);renderCards(i);calc(i);}
+function show(i){cur=i;document.body.dataset.clinic=i;renderSh(i);renderCards(i);calc(i);}
 document.getElementById('list').addEventListener('input',function(e){
 var d=e.target.dataset;if(!d||!d.k||!d.f)return;
 ents(cur,d.k)[+d.e][d.f]=e.target.value;save();dbPush(cur,d.k);calc(cur);
