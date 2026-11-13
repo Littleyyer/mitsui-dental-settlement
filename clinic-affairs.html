@@ -86,17 +86,18 @@ textarea{resize:vertical}
 var SUPABASE_URL='https://uafwnkgkocvuaztuxowo.supabase.co';
 var SUPABASE_ANON_KEY='sb_publishable_q6qRmnvKG5HGorjT1e4btA_MkFlEqYo';
 var CID=100;
-var CLINICS=['三井牙醫','三井美學牙醫','兩間都來','未定'];
+var CLINICS=['三井牙醫','三井美學牙醫','兩間都來','診所未定'];
+function cl(v){return v==='未定'?'診所未定':v;}
 var KINDS={
 todo:{ph:'新增待辦事項，例如：新診所名片',main:'title',empty:'還沒有待辦事項',
 fields:[['title','事項','text'],['status','狀態','select',['待辦','進行中','已完成']],['owner','負責人','text'],['due','期限','date'],['note','備注','area']],
 def:{title:'',status:'待辦',owner:'',due:'',note:''}},
 doctor:{ph:'新增醫師姓名',main:'name',empty:'還沒有醫師，輸入姓名後按新增',
 fields:[['name','姓名','text'],['clinic','診所','select',CLINICS],['status','狀態','select',['已確認','待確認']],['note','備注','area']],
-def:{name:'',clinic:'未定',status:'已確認',note:''}},
+def:{name:'',clinic:'診所未定',status:'已確認',note:''}},
 assistant:{ph:'新增助理姓名',main:'name',empty:'還沒有助理，輸入姓名後按新增',
 fields:[['name','姓名','text'],['clinic','診所','select',CLINICS],['role','職務','text'],['status','狀態','select',['已確認','待確認']],['note','備注','area']],
-def:{name:'',clinic:'未定',role:'',status:'已確認',note:''}},
+def:{name:'',clinic:'診所未定',role:'',status:'已確認',note:''}},
 salary:{ph:'新增助理姓名（薪資）',main:'name',empty:'還沒有薪資資料，輸入助理姓名後按新增',
 fields:[['name','助理姓名','text'],['type','計薪方式','select',['月薪','時薪','日薪']],['amount','金額（元）','number'],['note','備注','area']],
 def:{name:'',type:'月薪',amount:'',note:''}}
@@ -135,15 +136,15 @@ h+=chip(d.status,d.status==='已完成'?'ok':d.status==='進行中'?'warn':'');
 if(d.owner)h+=chip('負責人 '+d.owner,'mute');
 if(d.due)h+=chip('期限 '+d.due,(d.status!=='已完成'&&d.due<today())?'bad':'mute');
 }else if(kind==='doctor'){
-h+=chip(d.clinic,'')+chip(d.status,d.status==='已確認'?'ok':'warn');
+h+=chip(cl(d.clinic),'')+chip(d.status,d.status==='已確認'?'ok':'warn');
 }else if(kind==='assistant'){
-h+=chip(d.clinic,'')+(d.role?chip(d.role,'mute'):'')+chip(d.status,d.status==='已確認'?'ok':'warn');
+h+=chip(cl(d.clinic),'')+(d.role?chip(d.role,'mute'):'')+chip(d.status,d.status==='已確認'?'ok':'warn');
 }else if(kind==='salary'){
 h+=chip(d.type,'')+(d.amount!==''&&d.amount!=null?chip('NT$ '+num(d.amount).toLocaleString('zh-TW'),'big'):chip('金額未填','warn'));
 }
 return h;}
 function fieldHTML(key,f,val){
-var id='f-'+key+'-'+f[0],v=draftVal(id,val),h='<label class="fl"><span>'+f[1]+'</span>';
+var id='f-'+key+'-'+f[0],v=draftVal(id,f[0]==='clinic'?cl(val):val),h='<label class="fl"><span>'+f[1]+'</span>';
 if(f[2]==='select'){h+='<select id="'+id+'">'+f[3].map(function(o){return '<option'+(o===v?' selected':'')+'>'+esc(o)+'</option>';}).join('')+'</select>';}
 else if(f[2]==='area'){h+='<textarea id="'+id+'" rows="2">'+esc(v)+'</textarea>';}
 else{h+='<input id="'+id+'" type="'+f[2]+'"'+(f[2]==='number'?' inputmode="decimal"':'')+' value="'+esc(v)+'">';}
