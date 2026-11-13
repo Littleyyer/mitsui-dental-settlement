@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<title>診所事務｜三井牙醫・三井美學牙醫</title>
+<title>似錦診所事務｜三井牙醫・三井美學牙醫</title>
 <style>
 :root{--bg:#f3f6f8;--card:#fff;--text:#1c2733;--mute:#5f6e7c;--line:#d5dde5;--acc:#2f7f9d;--tint:#e3f1f7;--ok:#2f8a4c;--okbg:#e2f3e7;--warn:#a8650f;--warnbg:#fbefdb;--bad:#cc4457;--badbg:#f9e3e6;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11181e;--card:#1a232b;--text:#e6edf2;--mute:#9aa9b6;--line:#2f3d49;--acc:#6bb8d6;--tint:#1d3340;--ok:#6fcf8c;--okbg:#1b3324;--warn:#e8a950;--warnbg:#3a2c14;--bad:#ef7788;--badbg:#3c1f26}}
@@ -13,7 +13,10 @@
 html{font-size:112.5%}
 body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.55}
 main{max-width:760px;margin:0 auto;padding:18px 16px 48px}
-h1{font-size:1.4rem;margin:0 0 2px;color:var(--acc)}
+.brand{display:flex;justify-content:center;margin:0 0 6px}
+.brand img{width:170px;max-width:55%;height:auto;border-radius:18px;background:#fefefd}
+h1{font-size:1.4rem;margin:0 0 2px;color:var(--acc);text-align:center}
+.sub{text-align:center}
 h2{font-size:1.05rem;margin:14px 0 8px}
 .sub{color:var(--mute);font-size:.85rem;margin:0 0 12px}
 .who{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:.9rem}
@@ -71,7 +74,8 @@ textarea{resize:vertical}
 </head>
 <body>
 <main>
-<h1>診所事務</h1>
+<div class="brand"><img src="logo-sijin.jpg" alt="似錦牙醫 SI JIN DENTAL CLINIC" width="640" height="640"></div>
+<h1>似錦診所事務</h1>
 <p class="sub">三井牙醫・三井美學牙醫｜供股東查看與討論，知道網址的人都可以新增、修改、刪除與留言</p>
 <label class="who"><span>你的名字</span><input id="nick" placeholder="留言與新增時會顯示，例如：郭醫師" maxlength="20"></label>
 <p id="stat">連線中…</p>
