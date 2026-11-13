@@ -38,7 +38,8 @@ textarea{resize:vertical}
 .ih{display:flex;align-items:flex-start;gap:10px}
 .tt{flex:1;font-weight:700;word-break:break-word}
 .chk{flex:none;width:28px;height:28px;border:2px solid var(--acc);border-radius:8px;background:var(--card);color:#fff;font-weight:700;line-height:1;cursor:pointer;padding:0}
-.done .chk{background:var(--ok);border-color:var(--ok)}
+.done .chk,.paid .chk{background:var(--ok);border-color:var(--ok)}
+.item.paid .tt{color:var(--mute)}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .chip{font-size:.78rem;padding:2px 10px;border-radius:999px;background:var(--tint);color:var(--acc)}
 .chip.ok{background:var(--okbg);color:var(--ok)}
@@ -87,12 +88,16 @@ var SUPABASE_URL='https://uafwnkgkocvuaztuxowo.supabase.co';
 var SUPABASE_ANON_KEY='sb_publishable_q6qRmnvKG5HGorjT1e4btA_MkFlEqYo';
 var CID=100;
 var CLINICS=['三井牙醫','三井美學牙醫','兩間都來','診所未定'];
+var EXP_CLINICS=['似錦牙醫','三井美學牙醫','兩間分攤','診所未定'];
 var DOC_CLINICS=['似錦牙醫','三井美學牙醫','兩間都來','診所未定'];
 function cl(v,kind){if(v==='未定')return '診所未定';if(kind==='doctor'&&v==='三井牙醫')return '似錦牙醫';return v;}
 var KINDS={
 todo:{ph:'新增待辦事項，例如：新診所名片',main:'title',empty:'還沒有待辦事項',
 fields:[['title','事項','text'],['status','狀態','select',['待辦','進行中','已完成']],['owner','負責人','text'],['due','期限','date'],['note','備注','area']],
 def:{title:'',status:'待辦',owner:'',due:'',note:''}},
+expense:{ph:'新增費用，例如：招牌製作訂金',main:'title',empty:'還沒有費用紀錄，輸入項目後按新增',
+fields:[['title','費用項目','text'],['amount','金額（元）','number'],['payer','誰先付','text'],['date','日期','date'],['clinic','歸屬診所','select',EXP_CLINICS],['status','狀態','select',['待還款','已還款']],['note','備注','area']],
+def:{title:'',amount:'',payer:'',date:'',clinic:'診所未定',status:'待還款',note:''}},
 doctor:{ph:'新增醫師姓名',main:'name',empty:'還沒有醫師，輸入姓名後按新增',
 fields:[['name','姓名','text'],['clinic','診所','select',DOC_CLINICS],['status','狀態','select',['已確認','待確認']],['note','備注','area']],
 def:{name:'',clinic:'診所未定',status:'已確認',note:''}},
@@ -103,7 +108,7 @@ salary:{ph:'新增助理姓名（薪資）',main:'name',empty:'還沒有薪資�
 fields:[['name','助理姓名','text'],['type','計薪方式','select',['月薪','時薪','日薪']],['amount','金額（元）','number'],['note','備注','area']],
 def:{name:'',type:'月薪',amount:'',note:''}}
 };
-var TABS=[['todo','待辦事項'],['doctor','醫師名單'],['assistant','助理名單'],['salary','助理薪資'],['board','留言板']];
+var TABS=[['todo','待辦事項'],['expense','金流'],['doctor','醫師名單'],['assistant','助理名單'],['salary','助理薪資'],['board','留言板']];
 var SEEDS=['新診所名片','招牌更換','櫃檯電話設定','診所系統外聯的網址更動'];
 var SB=null,items={},comments={},pend={},gone={};
 var ui={tab:'todo',filter:'all',editing:{},open:{},delArm:{},draft:{}};
@@ -124,6 +129,7 @@ function listKeys(kind){
 var ks=Object.keys(items).filter(function(k){return kindOf(k)===kind;});
 ks.sort(function(a,b){var x=items[a],y=items[b];
 if(kind==='todo'){var dx=x.status==='已完成'?1:0,dy=y.status==='已完成'?1:0;if(dx!==dy)return dx-dy;var ax=x.due||'9999',ay=y.due||'9999';if(ax!==ay)return ax<ay?-1:1;}
+if(kind==='expense'){var px=x.status==='已還款'?1:0,py=y.status==='已還款'?1:0;if(px!==py)return px-py;var ex=x.date||'',ey=y.date||'';if(ex!==ey)return ex<ey?1:-1;}
 return (x.ts||0)-(y.ts||0)||(a<b?-1:1);});
 return ks;}
 function commentKeys(parent){
@@ -140,6 +146,12 @@ if(d.due)h+=chip('期限 '+d.due,(d.status!=='已完成'&&d.due<today())?'bad':'
 h+=chip(cl(d.clinic,'doctor'),'')+chip(d.status,d.status==='已確認'?'ok':'warn');
 }else if(kind==='assistant'){
 h+=chip(cl(d.clinic),'')+(d.role?chip(d.role,'mute'):'')+chip(d.status,d.status==='已確認'?'ok':'warn');
+}else if(kind==='expense'){
+h+=chip(d.status,d.status==='已還款'?'ok':'warn');
+if(d.amount!==''&&d.amount!=null)h+=chip('NT$ '+num(d.amount).toLocaleString('zh-TW'),'big');
+if(d.payer)h+=chip('先付 '+d.payer,'mute');
+if(d.date)h+=chip(d.date,'mute');
+h+=chip(cl(d.clinic),'');
 }else if(kind==='salary'){
 h+=chip(d.type,'')+(d.amount!==''&&d.amount!=null?chip('NT$ '+num(d.amount).toLocaleString('zh-TW'),'big'):chip('金額未填','warn'));
 }
@@ -166,10 +178,10 @@ h+='<div class="cmi"><input id="'+id+'" data-enter="send" data-k="'+parent+'" pl
 return h;}
 function cardHTML(key){
 if(ui.editing[key])return editHTML(key);
-var d=items[key],kind=kindOf(key),K=KINDS[kind],done=kind==='todo'&&d.status==='已完成';
+var d=items[key],kind=kindOf(key),K=KINDS[kind],done=kind==='todo'&&d.status==='已完成',paid=kind==='expense'&&d.status==='已還款';
 var n=commentKeys(key).length,arm=ui.delArm[key];
-var h='<div class="item'+(done?' done':'')+'"><div class="ih">';
-if(kind==='todo')h+='<button class="chk" data-act="tog" data-k="'+key+'" aria-label="切換完成">'+(done?'✓':'')+'</button>';
+var h='<div class="item'+(done?' done':'')+(paid?' paid':'')+'"><div class="ih">';
+if(kind==='todo'||kind==='expense')h+='<button class="chk" data-act="tog" data-k="'+key+'" aria-label="切換完成">'+((done||paid)?'✓':'')+'</button>';
 h+='<div class="tt">'+esc(d[K.main])+'</div></div><div class="chips">'+chips(kind,d)+'</div>';
 if(d.note)h+='<div class="nt">'+esc(d.note)+'</div>';
 h+='<div class="acts"><button data-act="edit" data-k="'+key+'">編輯</button><button data-act="cmt" data-k="'+key+'">留言'+(n?'（'+n+'）':'')+'</button><button class="dl'+(arm?' arm':'')+'" data-act="del" data-k="'+key+'">'+(arm?'再按一次刪除':'刪除')+'</button></div>';
@@ -177,9 +189,17 @@ if(ui.open[key])h+=commentsHTML(key);
 return h+'</div>';}
 function listView(kind){
 var K=KINDS[kind],ks=listKeys(kind),h='';
-if(kind==='todo'){
-h+='<div class="flt">'+[['all','全部'],['open','未完成'],['done','已完成']].map(function(f){return '<button data-act="flt" data-k="'+f[0]+'" class="'+(ui.filter===f[0]?'on':'')+'">'+f[1]+'</button>';}).join('')+'</div>';
-ks=ks.filter(function(k){var dn=items[k].status==='已完成';return ui.filter==='all'||(ui.filter==='done'?dn:!dn);});
+if(kind==='expense'){
+var tot=0,cnt=0,paid=0,by={};
+listKeys('expense').forEach(function(k){var d=items[k],a=num(d.amount);if(d.status==='已還款'){paid+=a;}else{tot+=a;cnt++;var pn=(d.payer||'').trim()||'未填寫';if(!by[pn])by[pn]={a:0,n:0};by[pn].a+=a;by[pn].n++;}});
+h+='<div class="box sum"><b>尚未還款 NT$ '+tot.toLocaleString('zh-TW')+'</b>（'+cnt+' 筆）';
+Object.keys(by).forEach(function(pn){h+='<div>'+esc(pn)+' 先付：NT$ '+by[pn].a.toLocaleString('zh-TW')+'（'+by[pn].n+' 筆）</div>';});
+h+='<div style="margin-top:4px;color:var(--mute)">已還款合計 NT$ '+paid.toLocaleString('zh-TW')+'</div></div>';
+}
+if(kind==='todo'||kind==='expense'){
+var ex=kind==='expense';
+h+='<div class="flt">'+[['all','全部'],['open',ex?'待還款':'未完成'],['done',ex?'已還款':'已完成']].map(function(f){return '<button data-act="flt" data-k="'+f[0]+'" class="'+(ui.filter===f[0]?'on':'')+'">'+f[1]+'</button>';}).join('')+'</div>';
+ks=ks.filter(function(k){var dn=items[k].status===(ex?'已還款':'已完成');return ui.filter==='all'||(ui.filter==='done'?dn:!dn);});
 }
 if(kind==='salary'){
 var sum=0,cnt=0;ks.forEach(function(k){if(items[k].type==='月薪'){sum+=num(items[k].amount);cnt++;}});
@@ -197,6 +217,7 @@ var el=document.getElementById('tabs'),sl=el.scrollLeft;
 el.innerHTML=TABS.map(function(t){
 var c=0;
 if(t[0]==='todo')c=listKeys('todo').filter(function(k){return items[k].status!=='已完成';}).length;
+else if(t[0]==='expense')c=listKeys('expense').filter(function(k){return items[k].status!=='已還款';}).length;
 else if(t[0]==='board')c=commentKeys('board').length;
 else c=listKeys(t[0]).length;
 return '<button class="tab'+(ui.tab===t[0]?' on':'')+'" data-t="'+t[0]+'">'+t[1]+(c?'<small>'+c+'</small>':'')+'</button>';}).join('');
@@ -292,6 +313,7 @@ function add(kind){
 var id='qa-'+kind,n=document.getElementById(id),v=n?(n.value||'').trim():'';
 if(!v)return;
 var K=KINDS[kind],d=clone(K.def);d[K.main]=v;d.ts=Date.now();d.by=nick();
+if(kind==='expense'){d.date=today();var nk=nick();if(nk!=='匿名')d.payer=nk;}
 var key=kind+':'+uid();items[key]=d;delete ui.draft[id];
 if(kind!=='todo')ui.editing[key]=true;
 render();put(key,d);
@@ -315,7 +337,7 @@ render();put(key,d);
 document.getElementById('view').addEventListener('click',function(e){
 var b=e.target.closest('[data-act]');if(!b)return;
 var act=b.dataset.act,k=b.dataset.k;
-if(act==='tog'){var d=clone(items[k]);d.status=d.status==='已完成'?'待辦':'已完成';items[k]=d;render();put(k,d);}
+if(act==='tog'){var d=clone(items[k]),isx=kindOf(k)==='expense';d.status=isx?(d.status==='已還款'?'待還款':'已還款'):(d.status==='已完成'?'待辦':'已完成');items[k]=d;render();put(k,d);}
 else if(act==='edit'){ui.editing[k]=true;clearDrafts('f-'+k+'-');render();}
 else if(act==='cancel'){delete ui.editing[k];clearDrafts('f-'+k+'-');render();}
 else if(act==='save')save(k);
@@ -335,7 +357,7 @@ if(t.dataset.enter==='add')add(t.dataset.k);else if(t.dataset.enter==='send')sen
 });
 document.getElementById('tabs').addEventListener('click',function(e){
 var b=e.target.closest('[data-t]');if(!b)return;
-ui.tab=b.dataset.t;render();
+ui.tab=b.dataset.t;ui.filter='all';render();
 var on=document.querySelector('#tabs .on');if(on&&on.scrollIntoView)on.scrollIntoView({inline:'center',block:'nearest'});
 });
 try{document.getElementById('nick').value=localStorage.getItem('affairs-nick')||'';}catch(e){}
