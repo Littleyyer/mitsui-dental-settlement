@@ -87,13 +87,14 @@ var SUPABASE_URL='https://uafwnkgkocvuaztuxowo.supabase.co';
 var SUPABASE_ANON_KEY='sb_publishable_q6qRmnvKG5HGorjT1e4btA_MkFlEqYo';
 var CID=100;
 var CLINICS=['三井牙醫','三井美學牙醫','兩間都來','診所未定'];
+var DOC_CLINICS=['似錦牙醫','三井美學牙醫','兩間都來','診所未定'];
 function cl(v){return v==='未定'?'診所未定':v;}
 var KINDS={
 todo:{ph:'新增待辦事項，例如：新診所名片',main:'title',empty:'還沒有待辦事項',
 fields:[['title','事項','text'],['status','狀態','select',['待辦','進行中','已完成']],['owner','負責人','text'],['due','期限','date'],['note','備注','area']],
 def:{title:'',status:'待辦',owner:'',due:'',note:''}},
 doctor:{ph:'新增醫師姓名',main:'name',empty:'還沒有醫師，輸入姓名後按新增',
-fields:[['name','姓名','text'],['clinic','診所','select',CLINICS],['status','狀態','select',['已確認','待確認']],['note','備注','area']],
+fields:[['name','姓名','text'],['clinic','診所','select',DOC_CLINICS],['status','狀態','select',['已確認','待確認']],['note','備注','area']],
 def:{name:'',clinic:'診所未定',status:'已確認',note:''}},
 assistant:{ph:'新增助理姓名',main:'name',empty:'還沒有助理，輸入姓名後按新增',
 fields:[['name','姓名','text'],['clinic','診所','select',CLINICS],['role','職務','text'],['status','狀態','select',['已確認','待確認']],['note','備注','area']],
@@ -145,7 +146,7 @@ h+=chip(d.type,'')+(d.amount!==''&&d.amount!=null?chip('NT$ '+num(d.amount).toLo
 return h;}
 function fieldHTML(key,f,val){
 var id='f-'+key+'-'+f[0],v=draftVal(id,f[0]==='clinic'?cl(val):val),h='<label class="fl"><span>'+f[1]+'</span>';
-if(f[2]==='select'){h+='<select id="'+id+'">'+f[3].map(function(o){return '<option'+(o===v?' selected':'')+'>'+esc(o)+'</option>';}).join('')+'</select>';}
+if(f[2]==='select'){var opts=f[3].slice();if(v&&opts.indexOf(v)<0)opts.push(v);h+='<select id="'+id+'">'+opts.map(function(o){return '<option'+(o===v?' selected':'')+'>'+esc(o)+'</option>';}).join('')+'</select>';}
 else if(f[2]==='area'){h+='<textarea id="'+id+'" rows="2">'+esc(v)+'</textarea>';}
 else{h+='<input id="'+id+'" type="'+f[2]+'"'+(f[2]==='number'?' inputmode="decimal"':'')+' value="'+esc(v)+'">';}
 return h+'</label>';}
