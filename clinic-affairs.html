@@ -96,7 +96,7 @@ todo:{ph:'新增待辦事項，例如：新診所名片',main:'title',empty:'還
 fields:[['title','事項','text'],['status','狀態','select',['待辦','進行中','已完成']],['owner','負責人','text'],['due','期限','date'],['note','備注','area']],
 def:{title:'',status:'待辦',owner:'',due:'',note:''}},
 expense:{ph:'新增費用，例如：招牌製作訂金',main:'title',empty:'還沒有費用紀錄，輸入項目後按新增',
-fields:[['title','費用項目','text'],['amount','金額（元）','number'],['payer','誰先付','text'],['date','日期','date'],['clinic','歸屬診所','select',EXP_CLINICS],['status','狀態','select',['待還款','已還款']],['note','備注','area']],
+fields:[['title','費用項目','text'],['amount','金額（元）','number'],['payer','誰先付','text'],['date','日期','date'],['clinic','歸屬診所','select',EXP_CLINICS],['status','狀態','select',['尚未付款','待還款','已還款']],['note','備注','area']],
 def:{title:'',amount:'',payer:'',date:'',clinic:'診所未定',status:'待還款',note:''}},
 doctor:{ph:'新增醫師姓名',main:'name',empty:'還沒有醫師，輸入姓名後按新增',
 fields:[['name','姓名','text'],['clinic','診所','select',DOC_CLINICS],['status','狀態','select',['已確認','待確認']],['note','備注','area']],
@@ -129,7 +129,7 @@ function listKeys(kind){
 var ks=Object.keys(items).filter(function(k){return kindOf(k)===kind;});
 ks.sort(function(a,b){var x=items[a],y=items[b];
 if(kind==='todo'){var dx=x.status==='已完成'?1:0,dy=y.status==='已完成'?1:0;if(dx!==dy)return dx-dy;var ax=x.due||'9999',ay=y.due||'9999';if(ax!==ay)return ax<ay?-1:1;}
-if(kind==='expense'){var px=x.status==='已還款'?1:0,py=y.status==='已還款'?1:0;if(px!==py)return px-py;var ex=x.date||'',ey=y.date||'';if(ex!==ey)return ex<ey?1:-1;}
+if(kind==='expense'){var rk={'尚未付款':0,'待還款':1,'已還款':2},px=rk[x.status]==null?1:rk[x.status],py=rk[y.status]==null?1:rk[y.status];if(px!==py)return px-py;var ex=x.date||'',ey=y.date||'';if(ex!==ey)return ex<ey?1:-1;}
 return (x.ts||0)-(y.ts||0)||(a<b?-1:1);});
 return ks;}
 function commentKeys(parent){
@@ -147,7 +147,7 @@ h+=chip(cl(d.clinic,'doctor'),'')+chip(d.status,d.status==='已確認'?'ok':'war
 }else if(kind==='assistant'){
 h+=chip(cl(d.clinic),'')+(d.role?chip(d.role,'mute'):'')+chip(d.status,d.status==='已確認'?'ok':'warn');
 }else if(kind==='expense'){
-h+=chip(d.status,d.status==='已還款'?'ok':'warn');
+h+=chip(d.status,d.status==='已還款'?'ok':d.status==='尚未付款'?'bad':'warn');
 if(d.amount!==''&&d.amount!=null)h+=chip('NT$ '+num(d.amount).toLocaleString('zh-TW'),'big');
 if(d.payer)h+=chip('先付 '+d.payer,'mute');
 if(d.date)h+=chip(d.date,'mute');
@@ -190,16 +190,20 @@ return h+'</div>';}
 function listView(kind){
 var K=KINDS[kind],ks=listKeys(kind),h='';
 if(kind==='expense'){
-var tot=0,cnt=0,paid=0,by={};
-listKeys('expense').forEach(function(k){var d=items[k],a=num(d.amount);if(d.status==='已還款'){paid+=a;}else{tot+=a;cnt++;var pn=(d.payer||'').trim()||'未填寫';if(!by[pn])by[pn]={a:0,n:0};by[pn].a+=a;by[pn].n++;}});
-h+='<div class="box sum"><b>尚未還款 NT$ '+tot.toLocaleString('zh-TW')+'</b>（'+cnt+' 筆）';
+var tot=0,cnt=0,paid=0,unp=0,ucnt=0,by={};
+listKeys('expense').forEach(function(k){var d=items[k],a=num(d.amount);
+if(d.status==='已還款'){paid+=a;}
+else if(d.status==='尚未付款'){unp+=a;ucnt++;}
+else{tot+=a;cnt++;var pn=(d.payer||'').trim()||'未填寫';if(!by[pn])by[pn]={a:0,n:0};by[pn].a+=a;by[pn].n++;}});
+h+='<div class="box sum"><div><b>尚未付款 NT$ '+unp.toLocaleString('zh-TW')+'</b>（'+ucnt+' 筆）</div>';
+h+='<div style="margin-top:4px"><b>待還款 NT$ '+tot.toLocaleString('zh-TW')+'</b>（'+cnt+' 筆）</div>';
 Object.keys(by).forEach(function(pn){h+='<div>'+esc(pn)+' 先付：NT$ '+by[pn].a.toLocaleString('zh-TW')+'（'+by[pn].n+' 筆）</div>';});
 h+='<div style="margin-top:4px;color:var(--mute)">已還款合計 NT$ '+paid.toLocaleString('zh-TW')+'</div></div>';
 }
 if(kind==='todo'||kind==='expense'){
 var ex=kind==='expense';
-h+='<div class="flt">'+[['all','全部'],['open',ex?'待還款':'未完成'],['done',ex?'已還款':'已完成']].map(function(f){return '<button data-act="flt" data-k="'+f[0]+'" class="'+(ui.filter===f[0]?'on':'')+'">'+f[1]+'</button>';}).join('')+'</div>';
-ks=ks.filter(function(k){var dn=items[k].status===(ex?'已還款':'已完成');return ui.filter==='all'||(ui.filter==='done'?dn:!dn);});
+h+='<div class="flt">'+(ex?[['all','全部'],['unpaid','尚未付款'],['owed','待還款'],['done','已還款']]:[['all','全部'],['open','未完成'],['done','已完成']]).map(function(f){return '<button data-act="flt" data-k="'+f[0]+'" class="'+(ui.filter===f[0]?'on':'')+'">'+f[1]+'</button>';}).join('')+'</div>';
+ks=ks.filter(function(k){var st=items[k].status;if(ui.filter==='all')return true;if(ex)return ui.filter==='unpaid'?st==='尚未付款':ui.filter==='owed'?st==='待還款':st==='已還款';var dn=st==='已完成';return ui.filter==='done'?dn:!dn;});
 }
 if(kind==='salary'){
 var sum=0,cnt=0;ks.forEach(function(k){if(items[k].type==='月薪'){sum+=num(items[k].amount);cnt++;}});
