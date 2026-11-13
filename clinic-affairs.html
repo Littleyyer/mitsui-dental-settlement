@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>診所事務｜三井牙醫・三井美學牙醫</title>
+<style>
+:root{--bg:#f3f6f8;--card:#fff;--text:#1c2733;--mute:#5f6e7c;--line:#d5dde5;--acc:#2f7f9d;--tint:#e3f1f7;--ok:#2f8a4c;--okbg:#e2f3e7;--warn:#a8650f;--warnbg:#fbefdb;--bad:#cc4457;--badbg:#f9e3e6;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11181e;--card:#1a232b;--text:#e6edf2;--mute:#9aa9b6;--line:#2f3d49;--acc:#6bb8d6;--tint:#1d3340;--ok:#6fcf8c;--okbg:#1b3324;--warn:#e8a950;--warnbg:#3a2c14;--bad:#ef7788;--badbg:#3c1f26}}
+:root[data-theme="dark"]{--bg:#11181e;--card:#1a232b;--text:#e6edf2;--mute:#9aa9b6;--line:#2f3d49;--acc:#6bb8d6;--tint:#1d3340;--ok:#6fcf8c;--okbg:#1b3324;--warn:#e8a950;--warnbg:#3a2c14;--bad:#ef7788;--badbg:#3c1f26}
+*{box-sizing:border-box}
+html{font-size:112.5%}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.55}
+main{max-width:760px;margin:0 auto;padding:18px 16px 48px}
+h1{font-size:1.4rem;margin:0 0 2px;color:var(--acc)}
+h2{font-size:1.05rem;margin:14px 0 8px}
+.sub{color:var(--mute);font-size:.85rem;margin:0 0 12px}
+.who{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:.9rem}
+.who span{flex:none;color:var(--mute)}
+input,select,textarea,button{font:inherit;color:var(--text)}
+input,select,textarea{width:100%;min-width:0;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);font-size:16px}
+textarea{resize:vertical}
+#stat{font-size:.78rem;color:var(--mute);margin:0 0 8px}
+#stat.bad{color:var(--bad);font-weight:700}
+#tabs{position:sticky;top:0;z-index:5;display:flex;gap:6px;overflow-x:auto;padding:8px 0;background:var(--bg);scrollbar-width:none}
+#tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;padding:8px 12px;border:1px solid var(--line);background:var(--card);border-radius:999px;font-size:.85rem;cursor:pointer;white-space:nowrap}
+.tab.on{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:700}
+.tab small{opacity:.8;margin-left:3px}
+.qa{display:flex;gap:8px;margin:8px 0 10px}
+.pri{flex:none;padding:8px 16px;border:0;border-radius:8px;background:var(--acc);color:#fff;font-weight:700;cursor:pointer}
+.item{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px}
+.item.done .tt{text-decoration:line-through;color:var(--mute)}
+.ih{display:flex;align-items:flex-start;gap:10px}
+.tt{flex:1;font-weight:700;word-break:break-word}
+.chk{flex:none;width:28px;height:28px;border:2px solid var(--acc);border-radius:8px;background:var(--card);color:#fff;font-weight:700;line-height:1;cursor:pointer;padding:0}
+.done .chk{background:var(--ok);border-color:var(--ok)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{font-size:.78rem;padding:2px 10px;border-radius:999px;background:var(--tint);color:var(--acc)}
+.chip.ok{background:var(--okbg);color:var(--ok)}
+.chip.warn{background:var(--warnbg);color:var(--warn)}
+.chip.bad{background:var(--badbg);color:var(--bad)}
+.chip.mute{background:var(--bg);color:var(--mute);border:1px solid var(--line)}
+.chip.big{font-size:.95rem;font-weight:700}
+.nt{margin-top:8px;font-size:.88rem;color:var(--mute);white-space:pre-wrap;word-break:break-word}
+.acts{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.acts button{padding:5px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);font-size:.82rem;cursor:pointer}
+.acts .dl.arm,.cmh .x.arm{background:var(--bad);border-color:var(--bad);color:#fff}
+.fl{display:block;margin-bottom:8px;font-size:.82rem;color:var(--mute)}
+.fl>span{display:block;margin-bottom:2px}
+.ed .acts button.pri{border:0;background:var(--acc);color:#fff}
+.cms{margin-top:10px;padding-top:8px;border-top:1px dashed var(--line)}
+.cm{padding:6px 0}
+.cm+.cm{border-top:1px solid var(--line)}
+.cmh{display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--mute)}
+.cmh b{color:var(--text)}
+.cmh .x{margin-left:auto;padding:2px 8px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--mute);font-size:.75rem;cursor:pointer}
+.cmt{font-size:.9rem;white-space:pre-wrap;word-break:break-word}
+.cmi{display:flex;gap:8px;margin-top:8px}
+.cmi button{flex:none;padding:8px 14px;border:1px solid var(--acc);border-radius:8px;background:var(--tint);color:var(--acc);font-weight:700;cursor:pointer}
+.empty{color:var(--mute);font-size:.85rem;padding:10px 0;text-align:center}
+.flt{display:flex;gap:6px;margin-top:4px}
+.flt button{padding:4px 12px;border:1px solid var(--line);border-radius:999px;background:var(--card);font-size:.8rem;cursor:pointer}
+.flt button.on{border-color:var(--acc);background:var(--tint);color:var(--acc);font-weight:700}
+.box{border-radius:10px;padding:10px 12px;font-size:.85rem;margin-bottom:10px}
+.box.warn{background:var(--warnbg);color:var(--warn)}
+.box.sum{background:var(--tint);color:var(--text)}
+.note{color:var(--mute);font-size:.76rem;margin-top:20px}
+</style>
+</head>
+<body>
+<main>
+<h1>診所事務</h1>
+<p class="sub">三井牙醫・三井美學牙醫｜供股東查看與討論，知道網址的人都可以新增、修改、刪除與留言</p>
+<label class="who"><span>你的名字</span><input id="nick" placeholder="留言與新增時會顯示，例如：郭醫師" maxlength="20"></label>
+<p id="stat">連線中…</p>
+<div id="tabs"></div>
+<div id="view"></div>
+<p class="note">資料存在共用資料庫，所有人看到同一份並即時同步；兩人同時改同一筆時，以最後存入的為準。刪除後無法復原。</p>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+var SUPABASE_URL='https://uafwnkgkocvuaztuxowo.supabase.co';
+var SUPABASE_ANON_KEY='sb_publishable_q6qRmnvKG5HGorjT1e4btA_MkFlEqYo';
+var CID=100;
+var CLINICS=['三井牙醫','三井美學牙醫','兩間都來','未定'];
+var KINDS={
+todo:{ph:'新增待辦事項，例如：新診所名片',main:'title',empty:'還沒有待辦事項',
+fields:[['title','事項','text'],['status','狀態','select',['待辦','進行中','已完成']],['owner','負責人','text'],['due','期限','date'],['note','備注','area']],
+def:{title:'',status:'待辦',owner:'',due:'',note:''}},
+doctor:{ph:'新增醫師姓名',main:'name',empty:'還沒有醫師，輸入姓名後按新增',
+fields:[['name','姓名','text'],['clinic','診所','select',CLINICS],['status','狀態','select',['已確認','待確認']],['note','備注','area']],
+def:{name:'',clinic:'未定',status:'已確認',note:''}},
+assistant:{ph:'新增助理姓名',main:'name',empty:'還沒有助理，輸入姓名後按新增',
+fields:[['name','姓名','text'],['clinic','診所','select',CLINICS],['role','職務','text'],['status','狀態','select',['已確認','待確認']],['note','備注','area']],
+def:{name:'',clinic:'未定',role:'',status:'已確認',note:''}},
+salary:{ph:'新增助理姓名（薪資）',main:'name',empty:'還沒有薪資資料，輸入助理姓名後按新增',
+fields:[['name','助理姓名','text'],['type','計薪方式','select',['月薪','時薪','日薪']],['amount','金額（元）','number'],['note','備注','area']],
+def:{name:'',type:'月薪',amount:'',note:''}}
+};
+var TABS=[['todo','待辦事項'],['doctor','醫師名單'],['assistant','助理名單'],['salary','助理薪資'],['board','留言板']];
+var SEEDS=['新診所名片','招牌更換','櫃檯電話設定','診所系統外聯的網址更動'];
+var SB=null,items={},comments={},pend={},gone={};
+var ui={tab:'todo',filter:'all',editing:{},open:{},delArm:{},draft:{}};
+
+function kindOf(k){return k.split(':')[0];}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+function clone(x){return JSON.parse(JSON.stringify(x));}
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function num(v){var x=parseFloat(String(v==null?'':v).replace(/[,\s，]/g,''));return isNaN(x)?0:x;}
+function pad(n){return n<10?'0'+n:''+n;}
+function today(){var t=new Date();return t.getFullYear()+'-'+pad(t.getMonth()+1)+'-'+pad(t.getDate());}
+function fmtTime(ts){if(!ts)return '';var d=new Date(ts);return (d.getMonth()+1)+'/'+d.getDate()+' '+pad(d.getHours())+':'+pad(d.getMinutes());}
+function nick(){var v=(document.getElementById('nick').value||'').trim();return v||'匿名';}
+function stat(t,bad){var e=document.getElementById('stat');e.textContent=t;e.className=bad?'bad':'';}
+
+/* ---------- 畫面 ---------- */
+function listKeys(kind){
+var ks=Object.keys(items).filter(function(k){return kindOf(k)===kind;});
+ks.sort(function(a,b){var x=items[a],y=items[b];
+if(kind==='todo'){var dx=x.status==='已完成'?1:0,dy=y.status==='已完成'?1:0;if(dx!==dy)return dx-dy;var ax=x.due||'9999',ay=y.due||'9999';if(ax!==ay)return ax<ay?-1:1;}
+return (x.ts||0)-(y.ts||0)||(a<b?-1:1);});
+return ks;}
+function commentKeys(parent){
+return Object.keys(comments).filter(function(k){return comments[k].p===parent;}).sort(function(a,b){return (comments[a].ts||0)-(comments[b].ts||0)||(a<b?-1:1);});}
+function draftVal(id,cur){return ui.draft[id]!==undefined?ui.draft[id]:(cur==null?'':cur);}
+function chip(t,c){return t?'<span class="chip'+(c?' '+c:'')+'">'+esc(t)+'</span>':'';}
+function chips(kind,d){
+var h='';
+if(kind==='todo'){
+h+=chip(d.status,d.status==='已完成'?'ok':d.status==='進行中'?'warn':'');
+if(d.owner)h+=chip('負責人 '+d.owner,'mute');
+if(d.due)h+=chip('期限 '+d.due,(d.status!=='已完成'&&d.due<today())?'bad':'mute');
+}else if(kind==='doctor'){
+h+=chip(d.clinic,'')+chip(d.status,d.status==='已確認'?'ok':'warn');
+}else if(kind==='assistant'){
+h+=chip(d.clinic,'')+(d.role?chip(d.role,'mute'):'')+chip(d.status,d.status==='已確認'?'ok':'warn');
+}else if(kind==='salary'){
+h+=chip(d.type,'')+(d.amount!==''&&d.amount!=null?chip('NT$ '+num(d.amount).toLocaleString('zh-TW'),'big'):chip('金額未填','warn'));
+}
+return h;}
+function fieldHTML(key,f,val){
+var id='f-'+key+'-'+f[0],v=draftVal(id,val),h='<label class="fl"><span>'+f[1]+'</span>';
+if(f[2]==='select'){h+='<select id="'+id+'">'+f[3].map(function(o){return '<option'+(o===v?' selected':'')+'>'+esc(o)+'</option>';}).join('')+'</select>';}
+else if(f[2]==='area'){h+='<textarea id="'+id+'" rows="2">'+esc(v)+'</textarea>';}
+else{h+='<input id="'+id+'" type="'+f[2]+'"'+(f[2]==='number'?' inputmode="decimal"':'')+' value="'+esc(v)+'">';}
+return h+'</label>';}
+function editHTML(key){
+var d=items[key],K=KINDS[kindOf(key)];
+var h='<div class="item ed">';
+K.fields.forEach(function(f){h+=fieldHTML(key,f,d[f[0]]);});
+h+='<div class="acts"><button class="pri" data-act="save" data-k="'+key+'">儲存</button><button data-act="cancel" data-k="'+key+'">取消</button></div></div>';
+return h;}
+function commentsHTML(parent){
+var cs=commentKeys(parent),h='<div class="cms">';
+cs.forEach(function(k){var c=comments[k],arm=ui.delArm[k];
+h+='<div class="cm"><div class="cmh"><b>'+esc(c.name)+'</b><span>'+fmtTime(c.ts)+'</span><button class="x'+(arm?' arm':'')+'" data-act="cdel" data-k="'+k+'">'+(arm?'再按一次刪除':'刪除')+'</button></div><div class="cmt">'+esc(c.text)+'</div></div>';});
+if(!cs.length)h+='<div class="empty">還沒有留言</div>';
+var id='cm-'+parent;
+h+='<div class="cmi"><input id="'+id+'" data-enter="send" data-k="'+parent+'" placeholder="寫下留言…" value="'+esc(draftVal(id,''))+'"><button data-act="send" data-k="'+parent+'">送出</button></div></div>';
+return h;}
+function cardHTML(key){
+if(ui.editing[key])return editHTML(key);
+var d=items[key],kind=kindOf(key),K=KINDS[kind],done=kind==='todo'&&d.status==='已完成';
+var n=commentKeys(key).length,arm=ui.delArm[key];
+var h='<div class="item'+(done?' done':'')+'"><div class="ih">';
+if(kind==='todo')h+='<button class="chk" data-act="tog" data-k="'+key+'" aria-label="切換完成">'+(done?'✓':'')+'</button>';
+h+='<div class="tt">'+esc(d[K.main])+'</div></div><div class="chips">'+chips(kind,d)+'</div>';
+if(d.note)h+='<div class="nt">'+esc(d.note)+'</div>';
+h+='<div class="acts"><button data-act="edit" data-k="'+key+'">編輯</button><button data-act="cmt" data-k="'+key+'">留言'+(n?'（'+n+'）':'')+'</button><button class="dl'+(arm?' arm':'')+'" data-act="del" data-k="'+key+'">'+(arm?'再按一次刪除':'刪除')+'</button></div>';
+if(ui.open[key])h+=commentsHTML(key);
+return h+'</div>';}
+function listView(kind){
+var K=KINDS[kind],ks=listKeys(kind),h='';
+if(kind==='todo'){
+h+='<div class="flt">'+[['all','全部'],['open','未完成'],['done','已完成']].map(function(f){return '<button data-act="flt" data-k="'+f[0]+'" class="'+(ui.filter===f[0]?'on':'')+'">'+f[1]+'</button>';}).join('')+'</div>';
+ks=ks.filter(function(k){var dn=items[k].status==='已完成';return ui.filter==='all'||(ui.filter==='done'?dn:!dn);});
+}
+if(kind==='salary'){
+var sum=0,cnt=0;ks.forEach(function(k){if(items[k].type==='月薪'){sum+=num(items[k].amount);cnt++;}});
+h+='<div class="box sum">月薪合計 NT$ '+sum.toLocaleString('zh-TW')+'（'+cnt+' 人）；時薪、日薪不列入合計</div>';
+h+='<div class="box warn">此頁薪資所有知道網址的人都看得到，也都能修改，請留意分享對象。</div>';
+}
+var qid='qa-'+kind;
+h+='<div class="qa"><input id="'+qid+'" data-enter="add" data-k="'+kind+'" placeholder="'+esc(K.ph)+'" value="'+esc(draftVal(qid,''))+'"><button class="pri" data-act="add" data-k="'+kind+'">新增</button></div>';
+ks.forEach(function(k){h+=cardHTML(k);});
+if(!ks.length)h+='<div class="empty">'+K.empty+'</div>';
+return h;}
+function boardView(){return '<h2>留言板</h2><div class="item">'+commentsHTML('board')+'</div>';}
+function renderTabs(){
+var el=document.getElementById('tabs'),sl=el.scrollLeft;
+el.innerHTML=TABS.map(function(t){
+var c=0;
+if(t[0]==='todo')c=listKeys('todo').filter(function(k){return items[k].status!=='已完成';}).length;
+else if(t[0]==='board')c=commentKeys('board').length;
+else c=listKeys(t[0]).length;
+return '<button class="tab'+(ui.tab===t[0]?' on':'')+'" data-t="'+t[0]+'">'+t[1]+(c?'<small>'+c+'</small>':'')+'</button>';}).join('');
+el.scrollLeft=sl;}
+function render(){
+var a=document.activeElement,id=a&&a.id,ss=null,se=null;
+try{if(a&&a.selectionStart!=null){ss=a.selectionStart;se=a.selectionEnd;}}catch(e){}
+renderTabs();
+document.getElementById('view').innerHTML=ui.tab==='board'?boardView():listView(ui.tab);
+if(id){var n=document.getElementById(id);if(n){n.focus();try{if(ss!=null)n.setSelectionRange(ss,se);}catch(e){}}}
+}
+
+/* ---------- 資料庫 ---------- */
+function put(key,data){
+if(!SB)return;
+pend[key]=(pend[key]||0)+1;
+SB.from('clinic_items').upsert({clinic_id:CID,item_key:key,entries:data,updated_at:new Date().toISOString()},{onConflict:'clinic_id,item_key'}).then(function(r){
+pend[key]--;if(r.error)stat('儲存失敗：'+r.error.message,1);});
+}
+function dbDelete(key,like,done){
+if(!SB){if(done)done();return;}
+var q=SB.from('clinic_items').delete().eq('clinic_id',CID);
+q=like?q.like('item_key',key):q.eq('item_key',key);
+q.then(function(r){if(done)done();if(r.error)stat('刪除失敗：'+r.error.message,1);});
+}
+function delItem(key){
+var cks=commentKeys(key);
+cks.forEach(function(c){delete comments[c];gone[c]=1;});
+delete items[key];gone[key]=1;delete ui.editing[key];delete ui.open[key];
+render();
+dbDelete(key,false,function(){delete gone[key];});
+dbDelete('c:'+key+':%',true,function(){cks.forEach(function(c){delete gone[c];});});
+}
+function delComment(k){
+delete comments[k];gone[k]=1;render();
+dbDelete(k,false,function(){delete gone[k];});
+}
+function applyRows(rows){
+var ni={},nc={};
+rows.forEach(function(r){var k=r.item_key;
+if(k.indexOf('meta:')===0||gone[k])return;
+if(!r.entries||typeof r.entries!=='object')return;
+if(k.indexOf('c:')===0)nc[k]=r.entries;else ni[k]=r.entries;});
+Object.keys(items).forEach(function(k){if(!gone[k]&&(pend[k]>0||ui.editing[k]))ni[k]=items[k];});
+Object.keys(comments).forEach(function(k){if(!gone[k]&&pend[k]>0)nc[k]=comments[k];});
+var before=JSON.stringify([items,comments]);
+items=ni;comments=nc;
+Object.keys(ui.editing).forEach(function(k){if(!items[k])delete ui.editing[k];});
+if(JSON.stringify([items,comments])!==before)render();
+}
+function onChange(p){
+var row=p.eventType==='DELETE'?p.old:p.new;
+if(!row||row.clinic_id!==CID)return;
+var k=row.item_key;if(!k||k.indexOf('meta:')===0)return;
+var map=k.indexOf('c:')===0?comments:items;
+if(p.eventType==='DELETE'){if(map[k]){delete map[k];delete ui.editing[k];render();}return;}
+if(gone[k]||pend[k]>0||ui.editing[k])return;
+var v=row.entries;if(!v||typeof v!=='object')return;
+if(JSON.stringify(map[k])===JSON.stringify(v))return;
+map[k]=v;render();
+}
+function poll(){
+if(!SB||document.hidden)return;
+SB.from('clinic_items').select('item_key,entries').eq('clinic_id',CID).then(function(r){if(!r.error)applyRows(r.data||[]);});
+}
+async function seed(){
+var now=new Date().toISOString();
+var rows=SEEDS.map(function(t,i){return {clinic_id:CID,item_key:'todo:seed'+(i+1),entries:{title:t,status:'待辦',owner:'',due:'',note:'',ts:1731456000000+i,by:'系統'},updated_at:now};});
+rows.push({clinic_id:CID,item_key:'meta:seeded',entries:{v:1},updated_at:now});
+var r=await SB.from('clinic_items').upsert(rows,{onConflict:'clinic_id,item_key',ignoreDuplicates:true});
+if(r.error)return;
+var r2=await SB.from('clinic_items').select('item_key,entries').eq('clinic_id',CID);
+if(!r2.error)applyRows(r2.data||[]);
+}
+async function init(){
+try{SB=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);}catch(e){SB=null;stat('無法載入共用儲存，目前修改不會保存',1);return;}
+stat('連線中…');
+var r;
+try{r=await SB.from('clinic_items').select('item_key,entries').eq('clinic_id',CID);}catch(e){r={error:e};}
+if(r.error){SB=null;stat('共用儲存無法連線（'+(r.error.message||'')+'），目前修改不會保存',1);return;}
+var rows=r.data||[];
+applyRows(rows);
+if(!rows.some(function(x){return x.item_key==='meta:seeded';}))await seed();
+try{SB.channel('affairs').on('postgres_changes',{event:'*',schema:'public',table:'clinic_items'},onChange).subscribe();}catch(e){}
+setInterval(poll,15000);
+stat('已連線：所有人看到同一份，修改會同步');
+}
+
+/* ---------- 操作 ---------- */
+function clearDrafts(prefix){Object.keys(ui.draft).forEach(function(k){if(k.indexOf(prefix)===0)delete ui.draft[k];});}
+function arm(k){ui.delArm[k]=true;render();setTimeout(function(){if(ui.delArm[k]){delete ui.delArm[k];render();}},3000);}
+function add(kind){
+var id='qa-'+kind,n=document.getElementById(id),v=n?(n.value||'').trim():'';
+if(!v)return;
+var K=KINDS[kind],d=clone(K.def);d[K.main]=v;d.ts=Date.now();d.by=nick();
+var key=kind+':'+uid();items[key]=d;delete ui.draft[id];
+if(kind!=='todo')ui.editing[key]=true;
+render();put(key,d);
+}
+function save(key){
+if(!items[key])return;
+var K=KINDS[kindOf(key)],d=clone(items[key]);
+K.fields.forEach(function(f){var n=document.getElementById('f-'+key+'-'+f[0]);if(n)d[f[0]]=(n.value||'').trim();});
+if(!d[K.main])d[K.main]='（未命名）';
+d.by=nick();
+items[key]=d;delete ui.editing[key];clearDrafts('f-'+key+'-');
+render();put(key,d);
+}
+function send(parent){
+var id='cm-'+parent,n=document.getElementById(id),v=n?(n.value||'').trim():'';
+if(!v)return;
+var key='c:'+parent+':'+uid(),d={p:parent,name:nick(),text:v,ts:Date.now()};
+comments[key]=d;delete ui.draft[id];
+render();put(key,d);
+}
+document.getElementById('view').addEventListener('click',function(e){
+var b=e.target.closest('[data-act]');if(!b)return;
+var act=b.dataset.act,k=b.dataset.k;
+if(act==='tog'){var d=clone(items[k]);d.status=d.status==='已完成'?'待辦':'已完成';items[k]=d;render();put(k,d);}
+else if(act==='edit'){ui.editing[k]=true;clearDrafts('f-'+k+'-');render();}
+else if(act==='cancel'){delete ui.editing[k];clearDrafts('f-'+k+'-');render();}
+else if(act==='save')save(k);
+else if(act==='del'){if(ui.delArm[k]){delete ui.delArm[k];delItem(k);}else arm(k);}
+else if(act==='cdel'){if(ui.delArm[k]){delete ui.delArm[k];delComment(k);}else arm(k);}
+else if(act==='cmt'){ui.open[k]=!ui.open[k];render();}
+else if(act==='send')send(k);
+else if(act==='add')add(k);
+else if(act==='flt'){ui.filter=k;render();}
+});
+document.getElementById('view').addEventListener('input',function(e){var t=e.target;if(t.id)ui.draft[t.id]=t.value;});
+document.getElementById('view').addEventListener('keydown',function(e){
+if(e.key!=='Enter'||e.isComposing||e.keyCode===229)return;
+var t=e.target;if(!t.dataset||!t.dataset.enter)return;
+e.preventDefault();
+if(t.dataset.enter==='add')add(t.dataset.k);else if(t.dataset.enter==='send')send(t.dataset.k);
+});
+document.getElementById('tabs').addEventListener('click',function(e){
+var b=e.target.closest('[data-t]');if(!b)return;
+ui.tab=b.dataset.t;render();
+var on=document.querySelector('#tabs .on');if(on&&on.scrollIntoView)on.scrollIntoView({inline:'center',block:'nearest'});
+});
+try{document.getElementById('nick').value=localStorage.getItem('affairs-nick')||'';}catch(e){}
+document.getElementById('nick').addEventListener('input',function(){try{localStorage.setItem('affairs-nick',this.value);}catch(e){}});
+render();
+init();
+</script>
+</body>
+</html>
