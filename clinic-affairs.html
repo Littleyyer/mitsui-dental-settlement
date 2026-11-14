@@ -46,6 +46,8 @@ textarea{resize:vertical}
 .chip.warn{background:var(--warnbg);color:var(--warn)}
 .chip.bad{background:var(--badbg);color:var(--bad)}
 .chip.mute{background:var(--bg);color:var(--mute);border:1px solid var(--line)}
+.chips{align-items:center}
+.flw{flex:none;margin-left:-2px}
 .chip.big{font-size:.95rem;font-weight:700}
 .nt{margin-top:8px;font-size:.88rem;color:var(--mute);white-space:pre-wrap;word-break:break-word}
 .acts{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
@@ -135,7 +137,8 @@ return ks;}
 function commentKeys(parent){
 return Object.keys(comments).filter(function(k){return comments[k].p===parent;}).sort(function(a,b){return (comments[a].ts||0)-(comments[b].ts||0)||(a<b?-1:1);});}
 function draftVal(id,cur){return ui.draft[id]!==undefined?ui.draft[id]:(cur==null?'':cur);}
-function chip(t,c){return t?'<span class="chip'+(c?' '+c:'')+'">'+esc(t)+'</span>':'';}
+var FLOWER='<svg class="flw" viewBox="0 0 24 24" width="20" height="20" role="img" aria-label="花"><g fill="#eda9bc"><circle cx="12" cy="6" r="4.6"/><circle cx="18.2" cy="10.6" r="4.6"/><circle cx="15.8" cy="17.8" r="4.6"/><circle cx="8.2" cy="17.8" r="4.6"/><circle cx="5.8" cy="10.6" r="4.6"/></g><circle cx="12" cy="12" r="3.2" fill="#f6d46a"/></svg>';
+function chip(t,c){return t?'<span class="chip'+(c?' '+c:'')+'">'+esc(t)+'</span>'+(t==='似錦牙醫'?FLOWER:''):'';}
 function chips(kind,d){
 var h='';
 if(kind==='todo'){
