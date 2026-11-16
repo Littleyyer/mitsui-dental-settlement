@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>似錦牙醫｜金流與薪資管理</title>
+<style>
+:root{--bg:#f6f7f5;--card:#fff;--text:#1d2b27;--mute:#5d6b66;--line:#cfd6d2;--acc:#4f9d69;--tint:#e0f0e4;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121816;--card:#1b2420;--text:#e8efec;--mute:#9aa8a2;--line:#33403b;--acc:#7bc795;--tint:#1c3326}}
+:root[data-theme="dark"]{--bg:#121816;--card:#1b2420;--text:#e8efec;--mute:#9aa8a2;--line:#33403b;--acc:#7bc795;--tint:#1c3326}
+*{box-sizing:border-box}
+html{font-size:112.5%}
+body{margin:0;transition:background .25s;background:var(--bg);color:var(--text);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.55}
+main{max-width:900px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:1.35rem;margin:0 0 4px;color:var(--acc)}
+.sub{color:var(--mute);font-size:.88rem;margin:0 0 18px;line-height:1.4}
+.tabs{display:flex;gap:8px;margin-bottom:18px;border-bottom:2px solid var(--line);padding-bottom:0}
+.tabs button{flex:1;padding:12px 10px;border:none;border-bottom:3px solid transparent;background:transparent;color:var(--text);font:inherit;font-size:.95rem;font-weight:500;cursor:pointer;transition:all .2s;margin-bottom:-2px}
+.tabs button:hover{background:var(--tint)}
+.tabs button.on{border-bottom-color:var(--acc);font-weight:700;color:var(--acc)}
+#stat{text-align:center;color:var(--mute);font-size:.85rem;margin-bottom:12px}
+#stat.bad{color:#d6455d;font-weight:600}
+.section{display:none}
+.section.show{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--acc);border-radius:10px;padding:16px 18px;margin-bottom:16px}
+.card h2{font-size:1.05rem;margin:0 0 12px;color:var(--acc);display:flex;justify-content:space-between;align-items:center}
+.add-form{background:var(--tint);border-radius:8px;padding:12px;margin-bottom:12px}
+.add-form input,.add-form select{width:100%;padding:8px 10px;margin:4px 0;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--text);font:inherit;font-size:.9rem}
+.add-form input[type="number"]{text-align:right}
+.add-form button{width:100%;padding:10px;margin-top:6px;border:none;border-radius:6px;background:var(--acc);color:#fff;font:inherit;font-weight:600;cursor:pointer;transition:opacity .2s}
+.add-form button:hover{opacity:.85}
+.item{padding:10px 0;border-bottom:1px dashed var(--line);display:flex;justify-content:space-between;align-items:start;gap:12px}
+.item:last-child{border:none}
+.item-main{flex:1;min-width:0}
+.item-title{font-weight:600;font-size:.95rem;margin-bottom:2px}
+.item-meta{font-size:.82rem;color:var(--mute);margin-top:4px}
+.item-amount{font-size:1.05rem;font-weight:700;color:var(--acc);white-space:nowrap}
+.item-amount.unpaid{color:#d6455d}
+.chip{display:inline-block;padding:2px 8px;margin:0 4px 4px 0;border-radius:4px;font-size:.75rem;font-weight:600;background:var(--line);color:var(--text)}
+.chip.ok{background:#4c9a3f;color:#fff}
+.chip.warn{background:#d9822b;color:#fff}
+.chip.bad{background:#d6455d;color:#fff}
+.item-actions{display:flex;gap:6px}
+.item-actions button{padding:4px 10px;border:1px solid var(--line);border-radius:5px;background:var(--card);color:var(--text);font-size:.8rem;cursor:pointer;transition:all .2s}
+.item-actions button:hover{background:var(--line)}
+.item-actions button.del{color:#d6455d;border-color:#d6455d}
+.item-actions button.del:hover{background:#d6455d;color:#fff}
+.empty{text-align:center;color:var(--mute);padding:20px;font-size:.9rem}
+.summary{background:var(--tint);border-radius:8px;padding:12px 16px;margin-top:16px}
+.summary-row{display:flex;justify-content:space-between;padding:6px 0;font-size:.92rem}
+.summary-row.total{border-top:2px solid var(--line);margin-top:6px;padding-top:10px;font-weight:700;font-size:1.05rem}
+.filter-bar{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.filter-bar button{padding:6px 12px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--text);font-size:.85rem;cursor:pointer;transition:all .2s}
+.filter-bar button.active{background:var(--acc);color:#fff;border-color:var(--acc)}
+.note{color:var(--mute);font-size:.78rem;margin-top:20px;line-height:1.4}
+</style>
+</head>
+<body>
+<main>
+<h1>似錦牙醫｜金流與薪資管理</h1>
+<p class="sub">管理診所總金流、助理薪資與醫師薪資。資料同步儲存至共用資料庫，有權限的人都能查看與修改。</p>
+
+<div class="tabs">
+<button class="on" data-tab="cashflow">診所總金流</button>
+<button data-tab="assistant">助理薪資</button>
+<button data-tab="doctor">醫師薪資</button>
+</div>
+
+<p id="stat">連線中…</p>
+
+<!-- 診所總金流 -->
+<div id="cashflow" class="section show">
+<div class="filter-bar">
+<button class="active" data-filter="all">全部</button>
+<button data-filter="尚未付款">尚未付款</button>
+<button data-filter="待還款">待還款</button>
+<button data-filter="已還款">已還款</button>
+</div>
+
+<div class="card">
+<h2>金流記錄</h2>
+<div class="add-form">
+<input type="text" id="cf-title" placeholder="費用項目，例如：招牌製作訂金">
+<input type="number" id="cf-amount" placeholder="金額（元）" inputmode="decimal">
+<input type="text" id="cf-payer" placeholder="誰先付">
+<input type="date" id="cf-date">
+<select id="cf-clinic">
+<option>似錦牙醫</option>
+<option>三井美學牙醫</option>
+<option>兩間分攤</option>
+<option>診所未定</option>
+</select>
+<select id="cf-status">
+<option>待還款</option>
+<option>尚未付款</option>
+<option>已還款</option>
+</select>
+<input type="text" id="cf-note" placeholder="備注（選填）">
+<button onclick="addCashflow()">新增金流紀錄</button>
+</div>
+<div id="cashflow-list"></div>
+</div>
+
+<div class="summary" id="cashflow-summary"></div>
+</div>
+
+<!-- 助理薪資 -->
+<div id="assistant" class="section">
+<div class="card">
+<h2>助理薪資</h2>
+<div class="add-form">
+<input type="text" id="as-name" placeholder="助理姓名">
+<select id="as-type">
+<option>月薪</option>
+<option>時薪</option>
+<option>日薪</option>
+</select>
+<input type="number" id="as-amount" placeholder="金額（元）" inputmode="decimal">
+<select id="as-clinic">
+<option>似錦牙醫</option>
+<option>三井美學牙醫</option>
+<option>兩間都來</option>
+<option>診所未定</option>
+</select>
+<input type="text" id="as-role" placeholder="職務（選填）">
+<input type="text" id="as-note" placeholder="備注（選填）">
+<button onclick="addAssistant()">新增助理薪資</button>
+</div>
+<div id="assistant-list"></div>
+</div>
+
+<div class="summary" id="assistant-summary"></div>
+</div>
+
+<!-- 醫師薪資 -->
+<div id="doctor" class="section">
+<div class="card">
+<h2>醫師薪資</h2>
+<div class="add-form">
+<input type="text" id="doc-name" placeholder="醫師姓名">
+<select id="doc-type">
+<option>月薪</option>
+<option>抽成</option>
+<option>固定+抽成</option>
+<option>其他</option>
+</select>
+<input type="number" id="doc-amount" placeholder="金額（元）" inputmode="decimal">
+<select id="doc-clinic">
+<option>似錦牙醫</option>
+<option>三井美學牙醫</option>
+<option>兩間都來</option>
+<option>診所未定</option>
+</select>
+<input type="text" id="doc-note" placeholder="備注（選填）">
+<button onclick="addDoctor()">新增醫師薪資</button>
+</div>
+<div id="doctor-list"></div>
+</div>
+
+<div class="summary" id="doctor-summary"></div>
+</div>
+
+<p class="note">數字存在共用儲存，有編輯權限的人都能修改；同時編輯同一筆時，以最後存入的為準。此頁面僅為管理工具，不構成法律、稅務或財務建議。</p>
+</main>
+
+<script src="sb-lite.js"></script>
+<script>
+var SUPABASE_URL='https://uafwnkgkocvuaztuxowo.supabase.co';
+var SUPABASE_ANON_KEY='sb_publishable_q6qRmnvKG5HGorjT1e4btA_MkFlEqYo';
+var CID=100;
+var SB=null,data={cashflow:[],assistant:[],doctor:[]};
+var ui={tab:'cashflow',filter:'all'};
+
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function num(v){var x=parseFloat(String(v==null?'':v).replace(/[,\s，]/g,''));return isNaN(x)?0:x;}
+function fm(x){return x.toLocaleString('zh-TW',{maximumFractionDigits:0});}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+function stat(t,bad){var e=document.getElementById('stat');e.textContent=t;e.className=bad?'bad':'';}
+
+async function init(){
+try{SB=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);}catch(e){SB=null;stat('無法載入共用儲存，目前修改不會保存',1);return;}
+stat('連線中…');
+var r;
+try{r=await SB.from('clinic_items').select('item_key,entries').eq('clinic_id',CID);}catch(e){r={error:e};}
+if(r.error){SB=null;stat('共用儲存無法連線（'+(r.error.message||'')+'），目前修改不會保存',1);return;}
+var rows=r.data||[];
+rows.forEach(function(row){
+if(row.item_key==='payroll:cashflow')data.cashflow=row.entries||[];
+else if(row.item_key==='payroll:assistant')data.assistant=row.entries||[];
+else if(row.item_key==='payroll:doctor')data.doctor=row.entries||[];
+});
+stat('已連線');
+render();
+}
+
+async function save(key,val){
+if(!SB)return;
+await SB.from('clinic_items').upsert({clinic_id:CID,item_key:key,entries:val,updated_at:new Date().toISOString()},{onConflict:'clinic_id,item_key'});
+}
+
+function addCashflow(){
+var title=document.getElementById('cf-title').value.trim();
+if(!title){alert('請輸入費用項目');return;}
+var item={
+id:uid(),
+title:title,
+amount:document.getElementById('cf-amount').value,
+payer:document.getElementById('cf-payer').value.trim(),
+date:document.getElementById('cf-date').value,
+clinic:document.getElementById('cf-clinic').value,
+status:document.getElementById('cf-status').value,
+note:document.getElementById('cf-note').value.trim(),
+ts:Date.now()
+};
+data.cashflow.push(item);
+save('payroll:cashflow',data.cashflow);
+document.getElementById('cf-title').value='';
+document.getElementById('cf-amount').value='';
+document.getElementById('cf-payer').value='';
+document.getElementById('cf-date').value='';
+document.getElementById('cf-note').value='';
+render();
+}
+
+function delCashflow(id){
+if(!confirm('確定要刪除這筆金流紀錄嗎？'))return;
+data.cashflow=data.cashflow.filter(function(x){return x.id!==id;});
+save('payroll:cashflow',data.cashflow);
+render();
+}
+
+function addAssistant(){
+var name=document.getElementById('as-name').value.trim();
+if(!name){alert('請輸入助理姓名');return;}
+var item={
+id:uid(),
+name:name,
+type:document.getElementById('as-type').value,
+amount:document.getElementById('as-amount').value,
+clinic:document.getElementById('as-clinic').value,
+role:document.getElementById('as-role').value.trim(),
+note:document.getElementById('as-note').value.trim(),
+ts:Date.now()
+};
+data.assistant.push(item);
+save('payroll:assistant',data.assistant);
+document.getElementById('as-name').value='';
+document.getElementById('as-amount').value='';
+document.getElementById('as-role').value='';
+document.getElementById('as-note').value='';
+render();
+}
+
+function delAssistant(id){
+if(!confirm('確定要刪除這筆助理薪資嗎？'))return;
+data.assistant=data.assistant.filter(function(x){return x.id!==id;});
+save('payroll:assistant',data.assistant);
+render();
+}
+
+function addDoctor(){
+var name=document.getElementById('doc-name').value.trim();
+if(!name){alert('請輸入醫師姓名');return;}
+var item={
+id:uid(),
+name:name,
+type:document.getElementById('doc-type').value,
+amount:document.getElementById('doc-amount').value,
+clinic:document.getElementById('doc-clinic').value,
+note:document.getElementById('doc-note').value.trim(),
+ts:Date.now()
+};
+data.doctor.push(item);
+save('payroll:doctor',data.doctor);
+document.getElementById('doc-name').value='';
+document.getElementById('doc-amount').value='';
+document.getElementById('doc-note').value='';
+render();
+}
+
+function delDoctor(id){
+if(!confirm('確定要刪除這筆醫師薪資嗎？'))return;
+data.doctor=data.doctor.filter(function(x){return x.id!==id;});
+save('payroll:doctor',data.doctor);
+render();
+}
+
+function render(){
+renderCashflow();
+renderAssistant();
+renderDoctor();
+}
+
+function renderCashflow(){
+var list=data.cashflow.slice();
+list.sort(function(a,b){
+var rk={'尚未付款':0,'待還款':1,'已還款':2},pa=rk[a.status]==null?1:rk[a.status],pb=rk[b.status]==null?1:rk[b.status];
+if(pa!==pb)return pa-pb;
+var da=a.date||'',db=b.date||'';
+if(da!==db)return da<db?1:-1;
+return (b.ts||0)-(a.ts||0);
+});
+if(ui.filter!=='all')list=list.filter(function(x){return x.status===ui.filter;});
+var h='';
+if(!list.length)h='<div class="empty">還沒有金流紀錄</div>';
+else{
+list.forEach(function(item){
+var amt=num(item.amount);
+h+='<div class="item"><div class="item-main"><div class="item-title">'+esc(item.title)+'</div>';
+h+='<div class="item-meta">';
+if(item.payer)h+='<span class="chip">'+esc(item.payer)+' 先付</span>';
+if(item.date)h+='<span class="chip">'+item.date+'</span>';
+h+='<span class="chip">'+esc(item.clinic)+'</span>';
+h+='<span class="chip '+(item.status==='已還款'?'ok':item.status==='尚未付款'?'bad':'warn')+'">'+esc(item.status)+'</span>';
+if(item.note)h+='<br>'+esc(item.note);
+h+='</div></div>';
+h+='<div><div class="item-amount'+(item.status==='尚未付款'?' unpaid':'')+'">NT$ '+fm(amt)+'</div>';
+h+='<div class="item-actions"><button class="del" onclick="delCashflow(\''+item.id+'\')">刪除</button></div></div></div>';
+});
+}
+document.getElementById('cashflow-list').innerHTML=h;
+var total=0,unpaid=0,pending=0,paid=0;
+data.cashflow.forEach(function(x){
+var a=num(x.amount);
+total+=a;
+if(x.status==='尚未付款')unpaid+=a;
+else if(x.status==='待還款')pending+=a;
+else if(x.status==='已還款')paid+=a;
+});
+document.getElementById('cashflow-summary').innerHTML='<div class="summary-row"><span>尚未付款</span><span>NT$ '+fm(unpaid)+'</span></div>'
++'<div class="summary-row"><span>待還款</span><span>NT$ '+fm(pending)+'</span></div>'
++'<div class="summary-row"><span>已還款</span><span>NT$ '+fm(paid)+'</span></div>'
++'<div class="summary-row total"><span>總計</span><span>NT$ '+fm(total)+'</span></div>';
+}
+
+function renderAssistant(){
+var list=data.assistant.slice().sort(function(a,b){return (b.ts||0)-(a.ts||0);});
+var h='';
+if(!list.length)h='<div class="empty">還沒有助理薪資資料</div>';
+else{
+list.forEach(function(item){
+var amt=num(item.amount);
+h+='<div class="item"><div class="item-main"><div class="item-title">'+esc(item.name)+'</div>';
+h+='<div class="item-meta">';
+h+='<span class="chip">'+esc(item.type)+'</span>';
+h+='<span class="chip">'+esc(item.clinic)+'</span>';
+if(item.role)h+='<span class="chip">'+esc(item.role)+'</span>';
+if(item.note)h+='<br>'+esc(item.note);
+h+='</div></div>';
+h+='<div><div class="item-amount">NT$ '+fm(amt)+'</div>';
+h+='<div class="item-actions"><button class="del" onclick="delAssistant(\''+item.id+'\')">刪除</button></div></div></div>';
+});
+}
+document.getElementById('assistant-list').innerHTML=h;
+var total=0;
+data.assistant.forEach(function(x){total+=num(x.amount);});
+document.getElementById('assistant-summary').innerHTML='<div class="summary-row total"><span>助理薪資總計</span><span>NT$ '+fm(total)+'</span></div>';
+}
+
+function renderDoctor(){
+var list=data.doctor.slice().sort(function(a,b){return (b.ts||0)-(a.ts||0);});
+var h='';
+if(!list.length)h='<div class="empty">還沒有醫師薪資資料</div>';
+else{
+list.forEach(function(item){
+var amt=num(item.amount);
+h+='<div class="item"><div class="item-main"><div class="item-title">'+esc(item.name)+'</div>';
+h+='<div class="item-meta">';
+h+='<span class="chip">'+esc(item.type)+'</span>';
+h+='<span class="chip">'+esc(item.clinic)+'</span>';
+if(item.note)h+='<br>'+esc(item.note);
+h+='</div></div>';
+h+='<div><div class="item-amount">NT$ '+fm(amt)+'</div>';
+h+='<div class="item-actions"><button class="del" onclick="delDoctor(\''+item.id+'\')">刪除</button></div></div></div>';
+});
+}
+document.getElementById('doctor-list').innerHTML=h;
+var total=0;
+data.doctor.forEach(function(x){total+=num(x.amount);});
+document.getElementById('doctor-summary').innerHTML='<div class="summary-row total"><span>醫師薪資總計</span><span>NT$ '+fm(total)+'</span></div>';
+}
+
+document.querySelector('.tabs').addEventListener('click',function(e){
+var b=e.target.closest('button');
+if(!b)return;
+var tab=b.dataset.tab;
+if(!tab)return;
+ui.tab=tab;
+document.querySelectorAll('.tabs button').forEach(function(x){x.classList.remove('on');});
+b.classList.add('on');
+document.querySelectorAll('.section').forEach(function(x){x.classList.remove('show');});
+document.getElementById(tab).classList.add('show');
+});
+
+document.querySelector('.filter-bar').addEventListener('click',function(e){
+var b=e.target.closest('button');
+if(!b)return;
+var f=b.dataset.filter;
+if(!f)return;
+ui.filter=f;
+document.querySelectorAll('.filter-bar button').forEach(function(x){x.classList.remove('active');});
+b.classList.add('active');
+renderCashflow();
+});
+
+init();
+</script>
+</body>
+</html>
