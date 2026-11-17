@@ -10,265 +10,193 @@
 *{box-sizing:border-box}
 html{font-size:112.5%}
 body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.55}
-main{max-width:1200px;margin:0 auto;padding:20px 16px 40px}
+main{max-width:1000px;margin:0 auto;padding:20px 16px 40px}
 h1{font-size:1.4rem;margin:0 0 8px;font-weight:600}
 .sub{color:var(--mute);font-size:.85rem;margin:0 0 20px}
-.card{background:var(--card);border-radius:12px;padding:16px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
-.card h2{font-size:1.1rem;margin:0 0 12px;color:var(--acc);font-weight:600}
-.filter-bar{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap}
-.filter-bar select{padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--text);font:inherit;font-size:1rem;min-width:150px}
-.doctor-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
-.doctor-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;cursor:pointer;transition:all .2s}
-.doctor-card:hover{border-color:var(--acc);box-shadow:0 2px 8px rgba(79,157,105,.15)}
-.doctor-card h3{margin:0 0 8px;font-size:1.1rem;color:var(--text)}
-.doctor-card .amount{font-size:1.3rem;font-weight:700;color:var(--acc);margin:8px 0}
-.doctor-card .meta{font-size:.85rem;color:var(--mute);margin-top:8px}
-.no-data{text-align:center;padding:40px 20px;color:var(--mute);font-size:1.1rem}
-.modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:1000;overflow:auto;padding:20px}
-.modal.show{display:flex;align-items:center;justify-content:center}
-.modal-content{background:var(--card);border-radius:12px;padding:24px;max-width:900px;width:100%;max-height:90vh;overflow:auto;position:relative}
-.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--mute);line-height:1}
-.modal-close:hover{color:var(--text)}
-.detail-table{width:100%;border-collapse:collapse;margin-top:16px}
-.detail-table th,.detail-table td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line)}
-.detail-table th{background:rgba(79,157,105,.1);font-weight:600;font-size:.9rem}
-.detail-table td:last-child{text-align:right;font-weight:500}
-.detail-table .cat{background:rgba(79,157,105,.05);font-weight:600;color:var(--acc)}
-.detail-table .total{background:rgba(255,193,7,.2);font-weight:700;font-size:1.05rem}
-.detail-table .final{background:rgba(79,157,105,.2);font-weight:700;font-size:1.1rem;color:var(--acc)}
-.loading{text-align:center;padding:40px;color:var(--mute)}
+.card{background:var(--card);border-radius:12px;padding:20px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.filter-bar{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
+.filter-bar label{font-size:.9rem;color:var(--mute);margin-right:8px}
+.filter-bar select{padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--text);font:inherit;font-size:1rem;min-width:180px}
+.salary-table{width:100%;border-collapse:collapse;margin-top:16px;font-size:0.9rem}
+.salary-table th,.salary-table td{padding:10px 12px;text-align:left;border:1px solid var(--line)}
+.salary-table th{background:var(--acc);color:#fff;font-weight:600}
+.salary-table td{background:var(--card)}
+.salary-table tr.section-header td{background:#e8f5e9;font-weight:600;color:var(--text)}
+.salary-table tr.highlight td{background:#fff9c4;font-weight:600}
+.salary-table tr.final td{background:#c8e6c9;font-weight:700;font-size:1.05rem}
+.salary-table td.label{font-weight:500;width:40%}
+.salary-table td.value{text-align:right;font-family:"SF Mono",Monaco,Consolas,monospace}
+.no-data{text-align:center;padding:60px 20px;color:var(--mute);font-size:1.1rem}
+.loading{text-align:center;padding:60px 20px;color:var(--mute)}
+.info-box{background:#e3f2fd;border-left:4px solid #2196f3;padding:12px 16px;margin:16px 0;border-radius:4px;font-size:0.9rem}
 </style>
+<script src="sb-lite.js"></script>
 </head>
 <body>
 <main>
-<h1>醫師薪資查詢</h1>
-<p class="sub">查看每個月每位醫師的薪資資料</p>
+<h1>🏥 醫師薪資查詢</h1>
+<p class="sub">選擇醫師和月份查看薪資明細檔案內容</p>
 
+<div class="card">
 <div class="filter-bar">
-<select id="monthSelect" onchange="loadData()">
-<option value="">選擇月份</option>
+<div>
+<label>醫師：</label>
+<select id="doctorSelect">
+<option value="">請選擇醫師</option>
+<option value="郭維仁">郭維仁</option>
+<option value="余珮璇">余珮璇</option>
+<option value="林佑都">林佑都</option>
+<option value="陳翊文">陳翊文</option>
+<option value="陳宜廷">陳宜廷</option>
+<option value="程向正">程向正</option>
+<option value="李佶翰">李佶翰</option>
+<option value="何思穎">何思穎</option>
+<option value="高方強">高方強</option>
+<option value="何昱璇">何昱璇</option>
+<option value="胡家瑄">胡家瑄</option>
+<option value="李峻嘉">李峻嘉</option>
+<option value="黃瀞儀">黃瀞儀</option>
+<option value="劉子綸">劉子綸</option>
+<option value="劉庭佑">劉庭佑</option>
+<option value="秦御芬">秦御芬</option>
+<option value="陳厚錕">陳厚錕</option>
 </select>
 </div>
+<div>
+<label>月份：</label>
+<select id="monthSelect">
+<option value="">請選擇月份</option>
+<option value="2026-09">2026年9月</option>
+<option value="2026-10">2026年10月</option>
+<option value="2026-11">2026年11月</option>
+</select>
+</div>
+</div>
+</div>
 
-<div id="loadingDiv" class="loading" style="display:none">載入中...</div>
-<div id="noDataDiv" class="no-data" style="display:none">無資料</div>
-<div id="doctorGrid" class="doctor-grid"></div>
+<div id="salaryDisplay"></div>
 </main>
 
-<div id="detailModal" class="modal" onclick="closeModal(event)">
-<div class="modal-content" onclick="event.stopPropagation()">
-<button class="modal-close" onclick="closeModal()">&times;</button>
-<div id="modalBody"></div>
-</div>
-</div>
+<script type="module">
+const doctorSelect = document.getElementById('doctorSelect');
+const monthSelect = document.getElementById('monthSelect');
+const salaryDisplay = document.getElementById('salaryDisplay');
 
-<script src="sb-lite.js"></script>
-<script>
-var SUPABASE_URL='https://uafwnkgkocvuaztuxowo.supabase.co';
-var SUPABASE_ANON_KEY='sb_publishable_q6qRmnvKG5HGorjT1e4btA_MkFlEqYo';
-var CID=100;
-var SB=null;
+// 監聽選擇變化
+doctorSelect.addEventListener('change', loadSalaryData);
+monthSelect.addEventListener('change', loadSalaryData);
 
-try{SB=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);}catch(e){console.error('Supabase init error:',e);}
+async function loadSalaryData() {
+  const doctor = doctorSelect.value;
+  const month = monthSelect.value;
+  
+  if (!doctor || !month) {
+    salaryDisplay.innerHTML = '';
+    return;
+  }
 
-var allData=[];
-var currentMonth='';
+  salaryDisplay.innerHTML = '<div class="card loading">載入中...</div>';
 
-// 初始化月份選單（2026年9月到現在）
-function initMonthSelect(){
-var select=document.getElementById('monthSelect');
-var startDate=new Date('2026-09-01');
-var endDate=new Date();
-endDate.setMonth(endDate.getMonth()+1); // 包含下個月
+  try {
+    // 從 Supabase 查詢該醫師該月份的薪資明細
+    const { data, error } = await sb
+      .from('doctor_payroll')
+      .select('*')
+      .eq('doctor_name', doctor)
+      .eq('month', month)
+      .single();
 
-var current=new Date(startDate);
-var options=[];
+    if (error) {
+      if (error.code === 'PGRST116') {
+        // 沒有找到資料
+        salaryDisplay.innerHTML = `
+          <div class="card no-data">
+            <p>無資料</p>
+            <div class="info-box">
+              <strong>提示：</strong>該醫師在 ${month.replace('2026-', '2026年')} 月的薪資明細尚未建立。<br>
+              薪資明細檔案位於 Google Drive：<br>
+              <code>似錦牙醫薪資/醫師/2026/${month.split('-')[1]}月/醫師薪資明細/salary_detail_${doctor}_${month}.xlsx</code>
+            </div>
+          </div>
+        `;
+        return;
+      }
+      throw error;
+    }
 
-while(current<=endDate){
-var value=current.getFullYear()+'-'+String(current.getMonth()+1).padStart(2,'0');
-var label=current.getFullYear()+'年'+(current.getMonth()+1)+'月';
-options.push({value:value,label:label});
-current.setMonth(current.getMonth()+1);
+    // 顯示薪資明細
+    displaySalaryDetail(data);
+    
+  } catch (error) {
+    console.error('Error:', error);
+    salaryDisplay.innerHTML = `
+      <div class="card no-data">
+        <p>載入失敗</p>
+        <p style="font-size:0.85rem;color:var(--warn);margin-top:12px;">
+          錯誤訊息：${error.message}
+        </p>
+      </div>
+    `;
+  }
 }
 
-options.reverse(); // 最新的月份在前
-options.forEach(function(opt){
-var option=document.createElement('option');
-option.value=opt.value;
-option.textContent=opt.label;
-select.appendChild(option);
-});
-
-// 預設選擇當前月份
-var now=new Date();
-var currentValue=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
-select.value=currentValue;
-currentMonth=currentValue;
+function displaySalaryDetail(data) {
+  const monthText = data.month.replace('2026-', '2026年') + '月';
+  
+  salaryDisplay.innerHTML = `
+    <div class="card">
+      <h2>📋 ${data.doctor_name} - ${monthText} 薪資明細</h2>
+      <table class="salary-table">
+        <tr><td class="label">月份</td><td class="value">${data.month_display || monthText}</td></tr>
+        <tr><td class="label">診所名稱</td><td class="value">${data.clinic_name || '115年巨蛋三井牙醫診所'}</td></tr>
+        <tr><td class="label">科別</td><td class="value">${data.department || '一般牙科'}</td></tr>
+        <tr><td class="label">醫師姓名</td><td class="value">${data.doctor_name}</td></tr>
+        
+        <tr class="section-header"><td colspan="2">薪資結構</td></tr>
+        <tr><td class="label">健保 0.9 / ${data.insurance_rate || '-'}</td><td class="value"></td></tr>
+        <tr><td class="label">一般自費 ${data.general_rate || '-'}</td><td class="value"></td></tr>
+        <tr><td class="label">特殊自費（手術） ${data.special_rate || '-'}</td><td class="value"></td></tr>
+        <tr><td class="label">安全重建自費 ${data.rebuild_rate || '-'}</td><td class="value"></td></tr>
+        
+        <tr class="section-header"><td colspan="2">其他項目</td></tr>
+        <tr><td class="label">印花稅票總額</td><td class="value">${formatCurrency(data.stamp_tax_total)}</td></tr>
+        
+        <tr class="section-header"><td colspan="2">進項</td></tr>
+        <tr><td class="label">健保（點數 × 0.9 × 拆分比例）</td><td class="value">${formatCurrency(data.insurance_income)}</td></tr>
+        <tr><td class="label">一般自費（總額 - 技工費）× 拆分比例</td><td class="value">${formatCurrency(data.general_income)}</td></tr>
+        <tr><td class="label">特殊自費（手術總額）× 拆分比例</td><td class="value">${formatCurrency(data.special_income)}</td></tr>
+        <tr><td class="label">安全重建自費（總額）× 拆分比例</td><td class="value">${formatCurrency(data.rebuild_income)}</td></tr>
+        <tr><td class="label">SOP費用</td><td class="value">${formatCurrency(data.sop_fee)}</td></tr>
+        
+        <tr class="section-header"><td colspan="2">減項</td></tr>
+        <tr><td class="label">療程待扣款</td><td class="value">${formatCurrency(data.treatment_deduction)}</td></tr>
+        <tr><td class="label">印花稅票（醫師負擔70%）</td><td class="value">${formatCurrency(data.stamp_tax_doctor)}</td></tr>
+        <tr><td class="label">勞健保</td><td class="value">${formatCurrency(data.labor_insurance)}</td></tr>
+        
+        <tr class="highlight"><td class="label">應付薪資</td><td class="value">${formatCurrency(data.payable_salary)}</td></tr>
+        
+        <tr class="section-header"><td colspan="2">其他進項/減項</td></tr>
+        <tr><td class="label">餐費</td><td class="value">${formatCurrency(data.meal_fee)}</td></tr>
+        <tr><td class="label">其他待扣款</td><td class="value">${formatCurrency(data.other_deduction)}</td></tr>
+        
+        <tr class="final"><td class="label">實領薪資</td><td class="value">${formatCurrency(data.actual_salary)}</td></tr>
+      </table>
+      
+      ${data.notes ? `<div class="info-box" style="margin-top:16px;">
+        <strong>備註：</strong>${data.notes}
+      </div>` : ''}
+    </div>
+  `;
 }
 
-// 載入資料
-function loadData(){
-var month=document.getElementById('monthSelect').value;
-if(!month){
-showNoData();
-return;
+function formatCurrency(value) {
+  if (value === null || value === undefined || value === '') return '-';
+  return new Intl.NumberFormat('zh-TW', {
+    style: 'decimal',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  }).format(value);
 }
-
-currentMonth=month;
-showLoading();
-
-if(!SB){
-showNoData();
-return;
-}
-
-// 從 Supabase 讀取該月份所有醫師的薪資資料
-SB.from('clinic_items')
-.select('*')
-.eq('clinic_id',CID)
-.like('item_key','doctor_salary:%:'+month)
-.then(function(result){
-if(result.error){
-console.error('Load error:',result.error);
-showNoData();
-return;
-}
-
-if(!result.data || result.data.length===0){
-showNoData();
-return;
-}
-
-// 整理資料
-allData=result.data.map(function(item){
-var entries=item.entries && item.entries.length>0?item.entries[0]:{};
-return {
-name:entries.name||'未知',
-month:entries.month||month,
-department:entries.department||'一般牙科',
-payableSalary:entries.payableSalary||0,
-actualSalary:entries.actualSalary||0,
-insurancePoints:entries.insurancePoints||0,
-insuranceIncome:entries.insuranceIncome||0,
-generalSelfPay:entries.generalSelfPay||0,
-generalIncome:entries.generalIncome||0,
-specialSelfPay:entries.specialSelfPay||0,
-specialIncome:entries.specialIncome||0,
-reconstructionSelfPay:entries.reconstructionSelfPay||0,
-reconstructionIncome:entries.reconstructionIncome||0,
-sopFee:entries.sopFee||0,
-treatmentDeduction:entries.treatmentDeduction||0,
-stampTaxDoctor:entries.stampTaxDoctor||0,
-laborInsurance:entries.laborInsurance||0,
-mealFee:entries.mealFee||0,
-otherIncome:entries.otherIncome||0,
-otherExpense:entries.otherExpense||0,
-calculated_at:entries.calculated_at||''
-};
-});
-
-renderDoctorGrid();
-});
-}
-
-function showLoading(){
-document.getElementById('loadingDiv').style.display='block';
-document.getElementById('noDataDiv').style.display='none';
-document.getElementById('doctorGrid').style.display='none';
-}
-
-function showNoData(){
-document.getElementById('loadingDiv').style.display='none';
-document.getElementById('noDataDiv').style.display='block';
-document.getElementById('doctorGrid').style.display='none';
-}
-
-function renderDoctorGrid(){
-document.getElementById('loadingDiv').style.display='none';
-document.getElementById('noDataDiv').style.display='none';
-var grid=document.getElementById('doctorGrid');
-grid.style.display='grid';
-grid.innerHTML='';
-
-if(allData.length===0){
-showNoData();
-return;
-}
-
-allData.forEach(function(doctor){
-var card=document.createElement('div');
-card.className='doctor-card';
-card.onclick=function(){showDetail(doctor);};
-
-var html='<h3>'+escapeHtml(doctor.name)+'</h3>';
-html+='<div class="amount">$ '+doctor.actualSalary.toLocaleString()+'</div>';
-html+='<div class="meta">'+escapeHtml(doctor.department)+'</div>';
-if(doctor.calculated_at){
-var date=new Date(doctor.calculated_at);
-html+='<div class="meta">'+date.getFullYear()+'/'+(date.getMonth()+1)+'/'+date.getDate()+'</div>';
-}
-
-card.innerHTML=html;
-grid.appendChild(card);
-});
-}
-
-function showDetail(doctor){
-var modal=document.getElementById('detailModal');
-var body=document.getElementById('modalBody');
-
-var html='<h2>'+escapeHtml(doctor.name)+' - '+doctor.month+'</h2>';
-html+='<table class="detail-table">';
-html+='<thead><tr><th>項目</th><th>金額（元）</th></tr></thead>';
-html+='<tbody>';
-
-html+='<tr class="cat"><td colspan="2">進項明細</td></tr>';
-html+='<tr><td>健保（'+doctor.insurancePoints.toLocaleString()+' 點）</td><td>'+doctor.insuranceIncome.toLocaleString()+'</td></tr>';
-html+='<tr><td>一般自費（'+doctor.generalSelfPay.toLocaleString()+'）</td><td>'+doctor.generalIncome.toLocaleString()+'</td></tr>';
-html+='<tr><td>特殊自費（'+doctor.specialSelfPay.toLocaleString()+'）</td><td>'+doctor.specialIncome.toLocaleString()+'</td></tr>';
-html+='<tr><td>安全重建自費（'+doctor.reconstructionSelfPay.toLocaleString()+'）</td><td>'+doctor.reconstructionIncome.toLocaleString()+'</td></tr>';
-
-html+='<tr class="cat"><td colspan="2">減項明細</td></tr>';
-html+='<tr><td>SOP費用</td><td>'+doctor.sopFee.toLocaleString()+'</td></tr>';
-html+='<tr><td>療程待扣款</td><td>'+doctor.treatmentDeduction.toLocaleString()+'</td></tr>';
-html+='<tr><td>印花稅票（醫師負擔）</td><td>'+doctor.stampTaxDoctor.toLocaleString()+'</td></tr>';
-html+='<tr><td>勞健保</td><td>'+doctor.laborInsurance.toLocaleString()+'</td></tr>';
-
-html+='<tr class="total"><td>應付薪資</td><td>$ '+doctor.payableSalary.toLocaleString()+'</td></tr>';
-
-if(doctor.otherIncome>0){
-html+='<tr><td>其他進項</td><td>'+doctor.otherIncome.toLocaleString()+'</td></tr>';
-}
-if(doctor.mealFee>0){
-html+='<tr><td>餐費</td><td>-'+doctor.mealFee.toLocaleString()+'</td></tr>';
-}
-if(doctor.otherExpense>0){
-html+='<tr><td>其他減項</td><td>-'+doctor.otherExpense.toLocaleString()+'</td></tr>';
-}
-
-html+='<tr class="final"><td>實領薪資</td><td>$ '+doctor.actualSalary.toLocaleString()+'</td></tr>';
-
-html+='</tbody></table>';
-
-body.innerHTML=html;
-modal.classList.add('show');
-}
-
-function closeModal(event){
-if(!event || event.target.id==='detailModal'){
-document.getElementById('detailModal').classList.remove('show');
-}
-}
-
-function escapeHtml(text){
-var div=document.createElement('div');
-div.textContent=text;
-return div.innerHTML;
-}
-
-// 初始化
-initMonthSelect();
-loadData();
 </script>
 </body>
 </html>
