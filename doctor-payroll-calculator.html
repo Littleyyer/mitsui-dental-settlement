@@ -3,210 +3,64 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>似錦牙醫｜醫師薪資計算</title>
+<title>似錦牙醫｜醫師薪資查詢</title>
 <style>
 :root{--bg:#f6f7f5;--card:#fff;--text:#1d2b27;--mute:#5d6b66;--line:#cfd6d2;--acc:#4f9d69;--warn:#f59e0b;--bad:#ef4444;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121816;--card:#1b2420;--text:#e8efec;--mute:#9aa8a2;--line:#33403b}}
 *{box-sizing:border-box}
 html{font-size:112.5%}
 body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.55}
-main{max-width:900px;margin:0 auto;padding:20px 16px 40px}
+main{max-width:1200px;margin:0 auto;padding:20px 16px 40px}
 h1{font-size:1.4rem;margin:0 0 8px;font-weight:600}
 .sub{color:var(--mute);font-size:.85rem;margin:0 0 20px}
 .card{background:var(--card);border-radius:12px;padding:16px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
 .card h2{font-size:1.1rem;margin:0 0 12px;color:var(--acc);font-weight:600}
-.fl{display:block;margin-bottom:12px}
-.fl span{display:block;font-size:.88rem;color:var(--mute);margin-bottom:4px}
-.fl input,.fl select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--text);font:inherit;font-size:1rem}
-.fl input[type="number"]{text-align:right}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media (max-width:600px){.row{grid-template-columns:1fr}}
-.btn{display:inline-block;padding:12px 24px;background:var(--acc);color:#fff;border:none;border-radius:8px;font:inherit;font-size:1rem;font-weight:600;cursor:pointer;text-align:center}
-.btn:hover{opacity:.9}
-.btn:disabled{opacity:.5;cursor:not-allowed}
-.result{background:var(--card);border:2px solid var(--acc);border-radius:12px;padding:20px;margin-top:20px}
-.result h3{font-size:1.2rem;margin:0 0 16px;color:var(--acc)}
-.rtable{width:100%;border-collapse:collapse}
-.rtable th,.rtable td{padding:8px 12px;text-align:left;border-bottom:1px solid var(--line)}
-.rtable th{background:rgba(79,157,105,.1);font-weight:600;font-size:.9rem}
-.rtable td{font-size:.95rem}
-.rtable td:last-child{text-align:right;font-weight:500}
-.rtable .cat{background:rgba(79,157,105,.05);font-weight:600;color:var(--acc)}
-.rtable .total{background:rgba(255,193,7,.2);font-weight:700;font-size:1.05rem}
-.rtable .final{background:rgba(79,157,105,.2);font-weight:700;font-size:1.1rem;color:var(--acc)}
-.note{font-size:.8rem;color:var(--mute);margin-top:12px;line-height:1.4}
-.warn-box{background:rgba(245,158,11,.1);border-left:4px solid var(--warn);padding:12px;margin-bottom:16px;font-size:.88rem;color:var(--text)}
+.filter-bar{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.filter-bar select{padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--text);font:inherit;font-size:1rem;min-width:150px}
+.doctor-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.doctor-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;cursor:pointer;transition:all .2s}
+.doctor-card:hover{border-color:var(--acc);box-shadow:0 2px 8px rgba(79,157,105,.15)}
+.doctor-card h3{margin:0 0 8px;font-size:1.1rem;color:var(--text)}
+.doctor-card .amount{font-size:1.3rem;font-weight:700;color:var(--acc);margin:8px 0}
+.doctor-card .meta{font-size:.85rem;color:var(--mute);margin-top:8px}
+.no-data{text-align:center;padding:40px 20px;color:var(--mute);font-size:1.1rem}
+.modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:1000;overflow:auto;padding:20px}
+.modal.show{display:flex;align-items:center;justify-content:center}
+.modal-content{background:var(--card);border-radius:12px;padding:24px;max-width:900px;width:100%;max-height:90vh;overflow:auto;position:relative}
+.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--mute);line-height:1}
+.modal-close:hover{color:var(--text)}
+.detail-table{width:100%;border-collapse:collapse;margin-top:16px}
+.detail-table th,.detail-table td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line)}
+.detail-table th{background:rgba(79,157,105,.1);font-weight:600;font-size:.9rem}
+.detail-table td:last-child{text-align:right;font-weight:500}
+.detail-table .cat{background:rgba(79,157,105,.05);font-weight:600;color:var(--acc)}
+.detail-table .total{background:rgba(255,193,7,.2);font-weight:700;font-size:1.05rem}
+.detail-table .final{background:rgba(79,157,105,.2);font-weight:700;font-size:1.1rem;color:var(--acc)}
+.loading{text-align:center;padding:40px;color:var(--mute)}
 </style>
 </head>
 <body>
 <main>
-<h1>醫師薪資計算器</h1>
-<p class="sub">根據健保點數、自費金額和各項費用自動計算醫師應付薪資與實領薪資</p>
+<h1>醫師薪資查詢</h1>
+<p class="sub">查看每個月每位醫師的薪資資料</p>
 
-<div class="warn-box">
-此計算器根據三井牙醫診所薪資結構設計。請輸入當月數據後點擊「計算薪資」按鈕。
-</div>
-
-<div class="card">
-<h2>基本資料</h2>
-<div class="row">
-<label class="fl">
-<span>醫師姓名 *</span>
-<input type="text" id="doctorName" placeholder="例如：陳宜廷">
-</label>
-<label class="fl">
-<span>月份 *</span>
-<input type="month" id="month" value="">
-</label>
-</div>
-<label class="fl">
-<span>科別</span>
-<select id="department">
-<option value="一般牙科">一般牙科</option>
-<option value="齒顎矯正科">齒顎矯正科</option>
-<option value="牙周病科">牙周病科</option>
-<option value="口腔外科">口腔外科</option>
+<div class="filter-bar">
+<select id="monthSelect" onchange="loadData()">
+<option value="">選擇月份</option>
 </select>
-</label>
 </div>
 
-<div class="card">
-<h2>健保申報</h2>
-<div class="row">
-<label class="fl">
-<span>健保點數 *</span>
-<input type="number" id="insurancePoints" placeholder="28202" step="1">
-</label>
-<label class="fl">
-<span>申報件數</span>
-<input type="number" id="caseCount" placeholder="19" step="1">
-</label>
-</div>
-<label class="fl">
-<span>健保拆分比例（醫師）</span>
-<input type="number" id="insuranceRate" value="0.55" step="0.01" min="0" max="1">
-</label>
-<p class="note">健保點數 × 0.9（點值）× 拆分比例 = 健保進項</p>
-</div>
-
-<div class="card">
-<h2>自費項目</h2>
-<div class="row">
-<label class="fl">
-<span>一般自費總額</span>
-<input type="number" id="generalSelfPay" placeholder="22700" step="1">
-</label>
-<label class="fl">
-<span>技工費總額</span>
-<input type="number" id="labFee" placeholder="1350" step="1">
-</label>
-</div>
-<label class="fl">
-<span>一般自費拆分比例（醫師）</span>
-<input type="number" id="generalRate" value="0.55" step="0.01" min="0" max="1">
-</label>
-<p class="note">一般自費總額 × 拆分比例 = 一般自費進項</p>
-
-<hr style="border:none;border-top:1px dashed var(--line);margin:16px 0">
-
-<div class="row">
-<label class="fl">
-<span>特殊自費（手術）總額</span>
-<input type="number" id="specialSelfPay" placeholder="57000" step="1">
-</label>
-<label class="fl">
-<span>特殊自費拆分比例（醫師）</span>
-<input type="number" id="specialRate" value="0.70" step="0.01" min="0" max="1">
-</label>
-</div>
-
-<div class="row">
-<label class="fl">
-<span>安全重建自費總額</span>
-<input type="number" id="reconstructionSelfPay" placeholder="172000" step="1">
-</label>
-<label class="fl">
-<span>安全重建拆分比例（醫師）</span>
-<input type="number" id="reconstructionRate" value="0.3" step="0.01" min="0" max="1">
-</label>
-</div>
-
-<label class="fl">
-<span>矯正總額</span>
-<input type="number" id="orthodonticTotal" placeholder="0" step="1">
-</label>
-<label class="fl">
-<span>待扣款總額</span>
-<input type="number" id="pendingDeduction" placeholder="0" step="1">
-</label>
-</div>
-
-<div class="card">
-<h2>其他項目</h2>
-<label class="fl">
-<span>印花稅票總額</span>
-<input type="number" id="stampTax" placeholder="1006" step="1">
-</label>
-<label class="fl">
-<span>SOP費用</span>
-<input type="number" id="sopFee" placeholder="760" step="1">
-</label>
-<label class="fl">
-<span>療程待扣款</span>
-<input type="number" id="treatmentDeduction" placeholder="0" step="1">
-</label>
-</div>
-
-<div class="card">
-<h2>減項</h2>
-<div class="row">
-<label class="fl">
-<span>勞健保</span>
-<input type="number" id="laborInsurance" placeholder="0" step="1">
-</label>
-<label class="fl">
-<span>餐費</span>
-<input type="number" id="mealFee" placeholder="0" step="1">
-</label>
-</div>
-<label class="fl">
-<span>其他待扣款</span>
-<input type="number" id="otherDeduction" placeholder="0" step="1">
-</label>
-</div>
-
-<div class="card">
-<h2>其他進項/減項</h2>
-<label class="fl">
-<span>其他進項（額外收入）</span>
-<input type="number" id="otherIncome" placeholder="0" step="1">
-</label>
-<label class="fl">
-<span>其他減項（額外扣款）</span>
-<input type="number" id="otherExpense" placeholder="0" step="1">
-</label>
-</div>
-
-<button class="btn" onclick="calculate()">計算薪資</button>
-
-<div id="resultSection" style="display:none">
-<div class="result">
-<h3>薪資計算結果</h3>
-<table class="rtable">
-<thead>
-<tr>
-<th>項目</th>
-<th>金額（元）</th>
-</tr>
-</thead>
-<tbody id="resultTable">
-</tbody>
-</table>
-<p class="note">計算公式：進項總和 - 減項總和 = 應付薪資；應付薪資 + 其他進項 - 其他減項 = 實領薪資</p>
-</div>
-</div>
-
+<div id="loadingDiv" class="loading" style="display:none">載入中...</div>
+<div id="noDataDiv" class="no-data" style="display:none">無資料</div>
+<div id="doctorGrid" class="doctor-grid"></div>
 </main>
+
+<div id="detailModal" class="modal" onclick="closeModal(event)">
+<div class="modal-content" onclick="event.stopPropagation()">
+<button class="modal-close" onclick="closeModal()">&times;</button>
+<div id="modalBody"></div>
+</div>
+</div>
 
 <script src="sb-lite.js"></script>
 <script>
@@ -217,132 +71,204 @@ var SB=null;
 
 try{SB=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);}catch(e){console.error('Supabase init error:',e);}
 
-document.getElementById('month').value=new Date().toISOString().slice(0,7);
+var allData=[];
+var currentMonth='';
 
-function num(id){
-var v=document.getElementById(id).value;
-return parseFloat(v)||0;
+// 初始化月份選單（2026年9月到現在）
+function initMonthSelect(){
+var select=document.getElementById('monthSelect');
+var startDate=new Date('2026-09-01');
+var endDate=new Date();
+endDate.setMonth(endDate.getMonth()+1); // 包含下個月
+
+var current=new Date(startDate);
+var options=[];
+
+while(current<=endDate){
+var value=current.getFullYear()+'-'+String(current.getMonth()+1).padStart(2,'0');
+var label=current.getFullYear()+'年'+(current.getMonth()+1)+'月';
+options.push({value:value,label:label});
+current.setMonth(current.getMonth()+1);
 }
 
-function calculate(){
-var doctorName=document.getElementById('doctorName').value.trim();
-if(!doctorName){alert('請輸入醫師姓名');return;}
+options.reverse(); // 最新的月份在前
+options.forEach(function(opt){
+var option=document.createElement('option');
+option.value=opt.value;
+option.textContent=opt.label;
+select.appendChild(option);
+});
 
-var month=document.getElementById('month').value;
-var department=document.getElementById('department').value;
+// 預設選擇當前月份
+var now=new Date();
+var currentValue=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+select.value=currentValue;
+currentMonth=currentValue;
+}
 
-// 計算各項進項
-var insurancePoints=num('insurancePoints');
-var insuranceRate=num('insuranceRate');
-var insuranceIncome=Math.round(insurancePoints*0.9*insuranceRate);
+// 載入資料
+function loadData(){
+var month=document.getElementById('monthSelect').value;
+if(!month){
+showNoData();
+return;
+}
 
-var generalSelfPay=num('generalSelfPay');
-var generalRate=num('generalRate');
-var generalIncome=Math.round(generalSelfPay*generalRate);
+currentMonth=month;
+showLoading();
 
-var specialSelfPay=num('specialSelfPay');
-var specialRate=num('specialRate');
-var specialIncome=Math.round(specialSelfPay*specialRate);
+if(!SB){
+showNoData();
+return;
+}
 
-var reconstructionSelfPay=num('reconstructionSelfPay');
-var reconstructionRate=num('reconstructionRate');
-var reconstructionIncome=Math.round(reconstructionSelfPay*reconstructionRate);
+// 從 Supabase 讀取該月份所有醫師的薪資資料
+SB.from('clinic_items')
+.select('*')
+.eq('clinic_id',CID)
+.like('item_key','doctor_salary:%:'+month)
+.then(function(result){
+if(result.error){
+console.error('Load error:',result.error);
+showNoData();
+return;
+}
 
-var sopFee=num('sopFee');
-var treatmentDeduction=num('treatmentDeduction');
-var stampTax=num('stampTax');
-var stampTaxDoctor=Math.round(stampTax*0.7); // 假設醫師負擔70%
+if(!result.data || result.data.length===0){
+showNoData();
+return;
+}
 
-// 計算減項
-var laborInsurance=num('laborInsurance');
-var mealFee=num('mealFee');
-var otherDeduction=num('otherDeduction');
+// 整理資料
+allData=result.data.map(function(item){
+var entries=item.entries && item.entries.length>0?item.entries[0]:{};
+return {
+name:entries.name||'未知',
+month:entries.month||month,
+department:entries.department||'一般牙科',
+payableSalary:entries.payableSalary||0,
+actualSalary:entries.actualSalary||0,
+insurancePoints:entries.insurancePoints||0,
+insuranceIncome:entries.insuranceIncome||0,
+generalSelfPay:entries.generalSelfPay||0,
+generalIncome:entries.generalIncome||0,
+specialSelfPay:entries.specialSelfPay||0,
+specialIncome:entries.specialIncome||0,
+reconstructionSelfPay:entries.reconstructionSelfPay||0,
+reconstructionIncome:entries.reconstructionIncome||0,
+sopFee:entries.sopFee||0,
+treatmentDeduction:entries.treatmentDeduction||0,
+stampTaxDoctor:entries.stampTaxDoctor||0,
+laborInsurance:entries.laborInsurance||0,
+mealFee:entries.mealFee||0,
+otherIncome:entries.otherIncome||0,
+otherExpense:entries.otherExpense||0,
+calculated_at:entries.calculated_at||''
+};
+});
 
-// 計算應付薪資
-var totalIncome=insuranceIncome+generalIncome+specialIncome+reconstructionIncome;
-var totalDeduction=sopFee+treatmentDeduction+stampTaxDoctor+laborInsurance;
-var payableSalary=totalIncome-totalDeduction;
+renderDoctorGrid();
+});
+}
 
-// 計算實領薪資
-var otherIncome=num('otherIncome');
-var otherExpense=num('otherExpense');
-var actualSalary=payableSalary+otherIncome-mealFee-otherExpense;
+function showLoading(){
+document.getElementById('loadingDiv').style.display='block';
+document.getElementById('noDataDiv').style.display='none';
+document.getElementById('doctorGrid').style.display='none';
+}
 
-// 顯示結果
-var html='';
+function showNoData(){
+document.getElementById('loadingDiv').style.display='none';
+document.getElementById('noDataDiv').style.display='block';
+document.getElementById('doctorGrid').style.display='none';
+}
+
+function renderDoctorGrid(){
+document.getElementById('loadingDiv').style.display='none';
+document.getElementById('noDataDiv').style.display='none';
+var grid=document.getElementById('doctorGrid');
+grid.style.display='grid';
+grid.innerHTML='';
+
+if(allData.length===0){
+showNoData();
+return;
+}
+
+allData.forEach(function(doctor){
+var card=document.createElement('div');
+card.className='doctor-card';
+card.onclick=function(){showDetail(doctor);};
+
+var html='<h3>'+escapeHtml(doctor.name)+'</h3>';
+html+='<div class="amount">$ '+doctor.actualSalary.toLocaleString()+'</div>';
+html+='<div class="meta">'+escapeHtml(doctor.department)+'</div>';
+if(doctor.calculated_at){
+var date=new Date(doctor.calculated_at);
+html+='<div class="meta">'+date.getFullYear()+'/'+(date.getMonth()+1)+'/'+date.getDate()+'</div>';
+}
+
+card.innerHTML=html;
+grid.appendChild(card);
+});
+}
+
+function showDetail(doctor){
+var modal=document.getElementById('detailModal');
+var body=document.getElementById('modalBody');
+
+var html='<h2>'+escapeHtml(doctor.name)+' - '+doctor.month+'</h2>';
+html+='<table class="detail-table">';
+html+='<thead><tr><th>項目</th><th>金額（元）</th></tr></thead>';
+html+='<tbody>';
+
 html+='<tr class="cat"><td colspan="2">進項明細</td></tr>';
-html+='<tr><td>健保（'+insurancePoints.toLocaleString()+' 點 × 0.9 × '+insuranceRate+'）</td><td>'+insuranceIncome.toLocaleString()+'</td></tr>';
-html+='<tr><td>一般自費（'+generalSelfPay.toLocaleString()+' × '+generalRate+'）</td><td>'+generalIncome.toLocaleString()+'</td></tr>';
-html+='<tr><td>特殊自費（'+specialSelfPay.toLocaleString()+' × '+specialRate+'）</td><td>'+specialIncome.toLocaleString()+'</td></tr>';
-html+='<tr><td>安全重建自費（'+reconstructionSelfPay.toLocaleString()+' × '+reconstructionRate+'）</td><td>'+reconstructionIncome.toLocaleString()+'</td></tr>';
+html+='<tr><td>健保（'+doctor.insurancePoints.toLocaleString()+' 點）</td><td>'+doctor.insuranceIncome.toLocaleString()+'</td></tr>';
+html+='<tr><td>一般自費（'+doctor.generalSelfPay.toLocaleString()+'）</td><td>'+doctor.generalIncome.toLocaleString()+'</td></tr>';
+html+='<tr><td>特殊自費（'+doctor.specialSelfPay.toLocaleString()+'）</td><td>'+doctor.specialIncome.toLocaleString()+'</td></tr>';
+html+='<tr><td>安全重建自費（'+doctor.reconstructionSelfPay.toLocaleString()+'）</td><td>'+doctor.reconstructionIncome.toLocaleString()+'</td></tr>';
 
 html+='<tr class="cat"><td colspan="2">減項明細</td></tr>';
-html+='<tr><td>SOP費用</td><td>'+sopFee.toLocaleString()+'</td></tr>';
-html+='<tr><td>療程待扣款</td><td>'+treatmentDeduction.toLocaleString()+'</td></tr>';
-html+='<tr><td>印花稅票（醫師負擔 70%）</td><td>'+stampTaxDoctor.toLocaleString()+'</td></tr>';
-html+='<tr><td>勞健保</td><td>'+laborInsurance.toLocaleString()+'</td></tr>';
+html+='<tr><td>SOP費用</td><td>'+doctor.sopFee.toLocaleString()+'</td></tr>';
+html+='<tr><td>療程待扣款</td><td>'+doctor.treatmentDeduction.toLocaleString()+'</td></tr>';
+html+='<tr><td>印花稅票（醫師負擔）</td><td>'+doctor.stampTaxDoctor.toLocaleString()+'</td></tr>';
+html+='<tr><td>勞健保</td><td>'+doctor.laborInsurance.toLocaleString()+'</td></tr>';
 
-html+='<tr class="total"><td>應付薪資</td><td>$ '+payableSalary.toLocaleString()+'</td></tr>';
+html+='<tr class="total"><td>應付薪資</td><td>$ '+doctor.payableSalary.toLocaleString()+'</td></tr>';
 
-if(otherIncome>0){
-html+='<tr><td>其他進項</td><td>'+otherIncome.toLocaleString()+'</td></tr>';
+if(doctor.otherIncome>0){
+html+='<tr><td>其他進項</td><td>'+doctor.otherIncome.toLocaleString()+'</td></tr>';
 }
-if(mealFee>0){
-html+='<tr><td>餐費</td><td>-'+mealFee.toLocaleString()+'</td></tr>';
+if(doctor.mealFee>0){
+html+='<tr><td>餐費</td><td>-'+doctor.mealFee.toLocaleString()+'</td></tr>';
 }
-if(otherExpense>0){
-html+='<tr><td>其他減項</td><td>-'+otherExpense.toLocaleString()+'</td></tr>';
-}
-
-html+='<tr class="final"><td>實領薪資</td><td>$ '+actualSalary.toLocaleString()+'</td></tr>';
-
-document.getElementById('resultTable').innerHTML=html;
-document.getElementById('resultSection').style.display='block';
-
-// 儲存到 Supabase
-saveToDatabase(doctorName,month,department,{
-insurancePoints:insurancePoints,
-insuranceIncome:insuranceIncome,
-generalSelfPay:generalSelfPay,
-generalIncome:generalIncome,
-specialSelfPay:specialSelfPay,
-specialIncome:specialIncome,
-reconstructionSelfPay:reconstructionSelfPay,
-reconstructionIncome:reconstructionIncome,
-sopFee:sopFee,
-treatmentDeduction:treatmentDeduction,
-stampTax:stampTax,
-stampTaxDoctor:stampTaxDoctor,
-laborInsurance:laborInsurance,
-mealFee:mealFee,
-otherIncome:otherIncome,
-otherDeduction:otherDeduction,
-otherExpense:otherExpense,
-payableSalary:payableSalary,
-actualSalary:actualSalary
-});
+if(doctor.otherExpense>0){
+html+='<tr><td>其他減項</td><td>-'+doctor.otherExpense.toLocaleString()+'</td></tr>';
 }
 
-function saveToDatabase(name,month,dept,data){
-if(!SB)return;
-var key='doctor_salary:'+name+':'+month;
-var entry={
-name:name,
-month:month,
-department:dept,
-calculated_at:new Date().toISOString(),
-...data
-};
-SB.from('clinic_items').upsert({
-clinic_id:CID,
-item_key:key,
-entries:[entry],
-updated_at:new Date().toISOString()
-},{onConflict:'clinic_id,item_key'}).then(function(r){
-if(r.error)console.error('Save error:',r.error);
-else console.log('Saved to database');
-});
+html+='<tr class="final"><td>實領薪資</td><td>$ '+doctor.actualSalary.toLocaleString()+'</td></tr>';
+
+html+='</tbody></table>';
+
+body.innerHTML=html;
+modal.classList.add('show');
 }
+
+function closeModal(event){
+if(!event || event.target.id==='detailModal'){
+document.getElementById('detailModal').classList.remove('show');
+}
+}
+
+function escapeHtml(text){
+var div=document.createElement('div');
+div.textContent=text;
+return div.innerHTML;
+}
+
+// 初始化
+initMonthSelect();
+loadData();
 </script>
 </body>
 </html>
