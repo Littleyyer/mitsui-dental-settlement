@@ -90,10 +90,9 @@ textarea{resize:vertical}
 var SUPABASE_URL='https://uafwnkgkocvuaztuxowo.supabase.co';
 var SUPABASE_ANON_KEY='sb_publishable_q6qRmnvKG5HGorjT1e4btA_MkFlEqYo';
 var CID=100;
-var CLINICS=['三井牙醫','三井美學牙醫','兩間都來','診所未定'];
 var EXP_CLINICS=['似錦牙醫','三井美學牙醫','兩間分攤','診所未定'];
 var DOC_CLINICS=['似錦牙醫','三井美學牙醫','兩間都來','診所未定'];
-function cl(v,kind){if(v==='未定')return '診所未定';if(kind==='doctor'&&v==='三井牙醫')return '似錦牙醫';return v;}
+function cl(v,kind){if(v==='未定')return '診所未定';if((kind==='doctor'||kind==='assistant')&&v==='三井牙醫')return '似錦牙醫';return v;}
 var KINDS={
 todo:{ph:'新增待辦事項，例如：新診所名片',main:'title',empty:'還沒有待辦事項',
 fields:[['title','事項','text'],['status','狀態','select',['待辦','進行中','已完成']],['owner','負責人','text'],['due','期限','date'],['note','備注','area']],
@@ -105,7 +104,7 @@ doctor:{ph:'新增醫師姓名',main:'name',empty:'還沒有醫師，輸入姓�
 fields:[['name','姓名','text'],['clinic','診所','select',DOC_CLINICS],['status','狀態','select',['已確認','待確認']],['note','備注','area']],
 def:{name:'',clinic:'診所未定',status:'已確認',note:''}},
 assistant:{ph:'新增助理姓名',main:'name',empty:'還沒有助理，輸入姓名後按新增',
-fields:[['name','姓名','text'],['clinic','診所','select',CLINICS],['role','職務','text'],['status','狀態','select',['已確認','待確認']],['note','備注','area']],
+fields:[['name','姓名','text'],['clinic','診所','select',DOC_CLINICS],['role','職務','text'],['status','狀態','select',['已確認','待確認']],['note','備注','area']],
 def:{name:'',clinic:'診所未定',role:'',status:'已確認',note:''}},
 salary:{ph:'新增助理姓名（薪資）',main:'name',empty:'還沒有薪資資料，輸入助理姓名後按新增',
 fields:[['name','助理姓名','text'],['type','計薪方式','select',['月薪','時薪','日薪']],['amount','金額（元）','number'],['note','備注','area']],
@@ -149,7 +148,7 @@ if(d.due)h+=chip('期限 '+d.due,(d.status!=='已完成'&&d.due<today())?'bad':'
 }else if(kind==='doctor'){
 h+=chip(cl(d.clinic,'doctor'),'')+chip(d.status,d.status==='已確認'?'ok':'warn');
 }else if(kind==='assistant'){
-h+=chip(cl(d.clinic),'')+(d.role?chip(d.role,'mute'):'')+chip(d.status,d.status==='已確認'?'ok':'warn');
+h+=chip(cl(d.clinic,'assistant'),'')+(d.role?chip(d.role,'mute'):'')+chip(d.status,d.status==='已確認'?'ok':'warn');
 }else if(kind==='expense'){
 h+=chip(d.status,d.status==='已還款'?'ok':d.status==='尚未付款'?'bad':'warn');
 if(d.amount!==''&&d.amount!=null)h+=chip('NT$ '+num(d.amount).toLocaleString('zh-TW'),'big');
